@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { CurrencyPipe, DatePipe, NgIf } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrderStore } from '../../order.store';
 import { ORDER_STATUS_LABELS } from '../../../../core/models/order.model';
@@ -8,7 +8,7 @@ import { ORDER_STATUS_LABELS } from '../../../../core/models/order.model';
   selector: 'app-order-detail',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, CurrencyPipe, DatePipe, RouterLink],
+  imports: [CurrencyPipe, DatePipe, RouterLink],
   styles: [
     `
       .detail-card {
@@ -96,46 +96,48 @@ import { ORDER_STATUS_LABELS } from '../../../../core/models/order.model';
     `,
   ],
   template: `
-    <ng-container *ngIf="store.loading(); else loaded">
+    @if (store.loading()) {
       <div class="loading-overlay">Loading order...</div>
-    </ng-container>
+    } @else {
+      @if (store.error()) {
+        <div class="error-state">{{ store.error() }}</div>
+      }
 
-    <ng-template #loaded>
-      <div *ngIf="store.error()" class="error-state">{{ store.error() }}</div>
+      @if (store.selected(); as order) {
+        <div class="detail-card">
+          <div class="page-header">
+            <h2>Order #{{ order.id }}</h2>
+            <a [routerLink]="['/orders', order.id, 'edit']" class="btn btn-outline">Edit</a>
+          </div>
 
-      <div class="detail-card" *ngIf="store.selected() as order">
-        <div class="page-header">
-          <h2>Order #{{ order.id }}</h2>
-          <a [routerLink]="['/orders', order.id, 'edit']" class="btn btn-outline">Edit</a>
-        </div>
+          <div class="field">
+            <div class="field-label">Customer</div>
+            <div class="field-value">{{ order.customer.name }}</div>
+          </div>
 
-        <div class="field">
-          <div class="field-label">Customer</div>
-          <div class="field-value">{{ order.customer.name }}</div>
-        </div>
+          <div class="field">
+            <div class="field-label">Status</div>
+            <div class="field-value">
+              <span class="status-badge">{{ ORDER_STATUS_LABELS[order.status] }}</span>
+            </div>
+          </div>
 
-        <div class="field">
-          <div class="field-label">Status</div>
-          <div class="field-value">
-            <span class="status-badge">{{ ORDER_STATUS_LABELS[order.status] }}</span>
+          <div class="field">
+            <div class="field-label">Total</div>
+            <div class="field-value">{{ order.total | currency }}</div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">Created</div>
+            <div class="field-value">{{ order.createdAt | date:'medium' }}</div>
+          </div>
+
+          <div class="actions">
+            <a routerLink="/orders" class="btn btn-outline">Back to Orders</a>
           </div>
         </div>
-
-        <div class="field">
-          <div class="field-label">Total</div>
-          <div class="field-value">{{ order.total | currency }}</div>
-        </div>
-
-        <div class="field">
-          <div class="field-label">Created</div>
-          <div class="field-value">{{ order.createdAt | date:'medium' }}</div>
-        </div>
-
-        <div class="actions">
-          <a routerLink="/orders" class="btn btn-outline">Back to Orders</a>
-        </div>
-      </div>
-    </ng-template>
+      }
+    }
   `,
 })
 export class OrderDetailComponent implements OnInit {
