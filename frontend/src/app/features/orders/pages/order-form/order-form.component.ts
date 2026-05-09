@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderStore } from '../../order.store';
 import { CustomerService } from '../../../../core/services/customer.service';
@@ -10,7 +10,7 @@ import { Customer } from '../../../../core/models/customer.model';
   selector: 'app-order-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, NgIf, NgFor, CurrencyPipe],
+  imports: [ReactiveFormsModule, NgIf, NgFor],
   styles: [
     `
       .form-card {
@@ -108,7 +108,7 @@ import { Customer } from '../../../../core/models/customer.model';
             formControlName="customerId"
           >
             <option value="">Select a customer...</option>
-            <option *ngFor="let c of customers()" [value]="c.id">{{ c.name }}</option>
+            <option *ngFor="let c of customers(); trackBy: trackById" [value]="c.id">{{ c.name }}</option>
           </select>
           <p *ngIf="orderForm.get('customerId')?.invalid && orderForm.get('customerId')?.touched" class="field-error">
             Customer is required
@@ -213,5 +213,9 @@ export class OrderFormComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/orders']);
+  }
+
+  trackById(_index: number, item: { id: number }): number {
+    return item.id;
   }
 }

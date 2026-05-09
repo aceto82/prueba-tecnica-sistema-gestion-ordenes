@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CustomerStore } from '../../customer.store';
@@ -124,7 +124,7 @@ import { CustomerStore } from '../../customer.store';
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let customer of store.customers()">
+          <tr *ngFor="let customer of store.customers(); trackBy: trackById">
             <td>{{ customer.id }}</td>
             <td>{{ customer.name }}</td>
             <td>{{ customer.email }}</td>
@@ -159,5 +159,9 @@ export class CustomerListComponent implements OnInit {
 
   nextPage(): void {
     this.store.load({ page: this.store.currentPage() + 1 }).subscribe();
+  }
+
+  trackById(_index: number, item: { id: number }): number {
+    return item.id;
   }
 }

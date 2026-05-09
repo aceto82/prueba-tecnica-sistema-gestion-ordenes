@@ -109,4 +109,50 @@ describe('OrderStore', () => {
       customer: { id: 1, name: 'Test' },
     });
   });
+
+  it('update should replace the matching order in the signal', (done) => {
+    // Seed orders via load first
+    store.load().subscribe();
+    const loadReq = httpMock.expectOne(
+      (r) => r.url === 'http://localhost:8080/api/orders'
+    );
+    loadReq.flush({
+      content: [
+        {
+          id: 1,
+          status: 'PENDING',
+          total: 100.0,
+          createdAt: '2026-05-01T10:00:00',
+          customer: { id: 1, name: 'Test' },
+        },
+      ],
+      totalElements: 1,
+      totalPages: 1,
+      number: 0,
+      size: 20,
+      first: true,
+      last: true,
+    });
+
+    // Now call update
+    store.update(1, { status: 'PROCESSING' }).subscribe({
+      next: (updated) => {
+        expect(updated.status).toBe('PROCESSING');
+        expect(store.orders().length).toBe(1);
+        expect(store.orders()[0].status).toBe('PROCESSING');
+        done();
+      },
+      error: done.fail,
+    });
+
+    const updateReq = httpMock.expectOne('http://localhost:8080/api/orders/1');
+    expect(updateReq.request.method).toBe('PUT');
+    updateReq.flush({
+      id: 1,
+      status: 'PROCESSING',
+      total: 100.0,
+      createdAt: '2026-05-01T10:00:00',
+      customer: { id: 1, name: 'Test' },
+    });
+  });
 });

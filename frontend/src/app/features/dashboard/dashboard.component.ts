@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, AfterViewInit, ElementRef, ViewChild, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardStore } from './dashboard.store';
 import Chart from 'chart.js/auto';
@@ -112,22 +112,26 @@ import Chart from 'chart.js/auto';
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
   readonly store = inject(DashboardStore);
-  
+
   @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
   private chart: Chart | null = null;
+
+  constructor() {
+    // effect() must be called inside an injection context (constructor)
+    effect(() => {
+      const stats = this.store.stats();
+      if (stats && this.chartCanvas) {
+        this.createChart(stats.ordersByStatus);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.store.loadStats();
   }
 
   ngAfterViewInit(): void {
-    // Create chart when stats are available
-    const unsubscribe = this.store.stats.subscribe(stats => {
-      if (stats && this.chartCanvas) {
-        this.createChart(stats.ordersByStatus);
-        unsubscribe();
-      }
-    });
+    // Chart creation is handled reactively by the effect in the constructor
   }
 
   private createChart(ordersByStatus: Record<string, number>): void {
