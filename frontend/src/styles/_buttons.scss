@@ -1,0 +1,78 @@
+// === Button System ===
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    opacity var(--transition-fast);
+  line-height: var(--line-height-tight);
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  // Variants
+  &--primary {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+    &:hover:not(:disabled) { background: var(--color-primary-hover); border-color: var(--color-primary-hover); }
+  }
+
+  &--secondary {
+    background: var(--color-surface);
+    color: var(--color-text);
+    border-color: var(--color-border);
+    &:hover:not(:disabled) { background: var(--color-surface-hover); }
+  }
+
+  &--outline {
+    background: transparent;
+    color: var(--color-text-secondary);
+    border-color: var(--color-border);
+    &:hover:not(:disabled) { background: var(--color-surface-hover); color: var(--color-text); }
+  }
+
+  &--danger {
+    background: var(--color-danger);
+    color: #fff;
+    border-color: var(--color-danger);
+    &:hover:not(:disabled) { background: var(--color-danger-hover); border-color: var(--color-danger-hover); }
+  }
+
+  &--danger-outline {
+    background: transparent;
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+    &:hover:not(:disabled) { background: var(--color-danger-light); }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: var(--color-text-secondary);
+    border-color: transparent;
+    &:hover:not(:disabled) { background: var(--color-surface-hover); color: var(--color-text); }
+  }
+
+  // Sizes
+  &--sm { padding: var(--space-xs) var(--space-sm); font-size: var(--font-size-sm); }
+  &--lg { padding: var(--space-sm) var(--space-lg); font-size: var(--font-size-lg); }
+
+  // Full width
+  &--block { display: flex; width: 100%; }
+}

@@ -4,6 +4,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { appRoutes } from './app.routes';
 import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { AuthStore } from './features/auth/auth.store';
+import { ThemeStore } from './core/theme.store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,7 +14,11 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: () => {
         const authStore = inject(AuthStore);
-        return () => authStore.rehydrate();
+        const themeStore = inject(ThemeStore);
+        return () => {
+          authStore.rehydrate();
+          themeStore.init();
+        };
       },
       multi: true,
     },

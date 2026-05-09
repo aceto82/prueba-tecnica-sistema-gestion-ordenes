@@ -1,0 +1,14 @@
+// === Typography ===
+
+h1 { font-size: var(--font-size-2xl); font-weight: var(--font-weight-semibold); color: var(--color-text); margin: 0; }
+h2 { font-size: var(--font-size-xl); font-weight: var(--font-weight-semibold); color: var(--color-text); margin: 0; }
+h3 { font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); color: var(--color-text); margin: 0; }
+h4 { font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--color-text); margin: 0; }
+
+.text-muted { color: var(--color-text-muted); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-error { color: var(--color-danger); }
+.text-success { color: var(--color-success); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-xs { font-size: var(--font-size-xs); }
+.text-bold { font-weight: var(--font-weight-semibold); }

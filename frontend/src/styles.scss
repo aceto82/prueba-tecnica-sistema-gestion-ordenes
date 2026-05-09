@@ -1,4 +1,13 @@
-/* Global styles — OMS */
+// === Global Styles — OMS ===
+
+// Design system
+@import 'styles/variables';
+@import 'styles/typography';
+@import 'styles/buttons';
+@import 'styles/layout';
+@import 'styles/components';
+@import 'styles/theme';
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -7,8 +16,9 @@
 
 html, body {
   height: 100%;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-family);
   font-size: 16px;
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
