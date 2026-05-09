@@ -63,4 +63,4 @@ Chain strategy: stacked-to-main
 
 - [x] 5.1 Run `npm test` — verify all tests pass
 - [x] 5.2 Run `npm run build` — verify production build succeeds
-- [ ] 5.3 Manual visual check: login, order list, order form, customer list, dashboard in both themes
+- [x] 5.3 Manual visual check: login, order list, order form, customer list, dashboard in both themes
