@@ -11,137 +11,78 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthStore } from '../auth.store';
+import { CardComponent, InputComponent, ButtonComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule],
-  styles: [
-    `
-      .login-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        background: #f5f5f5;
-      }
+  imports: [ReactiveFormsModule, CardComponent, InputComponent, ButtonComponent],
+  styles: [`
+    .login-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--color-bg);
+    }
 
-      .login-card {
-        background: #fff;
-        max-width: 400px;
-        width: 100%;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
-      }
+    .login-card {
+      max-width: 400px;
+      width: 100%;
+    }
 
-      .login-title {
-        text-align: center;
-        margin-bottom: 1.5rem;
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #212121;
-      }
+    .login-title {
+      text-align: center;
+      margin-bottom: var(--space-lg);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--color-text);
+    }
 
-      .form-group {
-        margin-bottom: 1rem;
-      }
-
-      .form-group label {
-        display: block;
-        margin-bottom: 0.375rem;
-        font-size: 0.875rem;
-        color: #555;
-      }
-
-      .form-control {
-        display: block;
-        width: 100%;
-        padding: 0.5rem 0.75rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 1rem;
-        box-sizing: border-box;
-        transition: border-color 0.15s;
-      }
-
-      .form-control:focus {
-        outline: none;
-        border-color: #1976d2;
-      }
-
-      .btn-submit {
-        display: block;
-        width: 100%;
-        padding: 0.6rem;
-        background: #1976d2;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        font-size: 1rem;
-        cursor: pointer;
-        margin-top: 1.25rem;
-        transition: opacity 0.15s;
-      }
-
-      .btn-submit:disabled {
-        opacity: 0.55;
-        cursor: not-allowed;
-      }
-
-      .btn-submit:not(:disabled):hover {
-        background: #1565c0;
-      }
-
-      .login-error {
-        color: #d32f2f;
-        font-size: 0.875rem;
-        margin-top: 0.5rem;
-        text-align: center;
-      }
-    `,
-  ],
+    .login-error {
+      color: var(--color-danger);
+      font-size: 0.875rem;
+      margin-top: var(--space-sm);
+      text-align: center;
+    }
+  `],
   template: `
     <div class="login-container">
       <div class="login-card">
-        <h1 class="login-title">Order Management System</h1>
+        <app-card padding="lg" shadow="md">
+          <h1 class="login-title">Order Management System</h1>
 
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input
-              id="username"
-              type="text"
-              class="form-control"
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <app-input
               formControlName="username"
-              autocomplete="username"
+              label="Username"
+              type="text"
+              id="username"
             />
-          </div>
 
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              class="form-control"
+            <app-input
               formControlName="password"
-              autocomplete="current-password"
+              label="Password"
+              type="password"
+              id="password"
             />
-          </div>
 
-          <button
-            type="submit"
-            class="btn-submit"
-            [disabled]="loginForm.invalid || loading()"
-          >
-            {{ loading() ? 'Logging in...' : 'Log in' }}
-          </button>
+            <app-button
+              type="submit"
+              variant="primary"
+              style="width: 100%; margin-top: var(--space-lg);"
+              [disabled]="loginForm.invalid || loading()"
+              [loading]="loading()"
+            >
+              {{ loading() ? 'Logging in...' : 'Log in' }}
+            </app-button>
 
-          @if (error()) {
-            <p class="login-error">{{ error() }}</p>
-          }
-        </form>
+            @if (error()) {
+              <p class="login-error">{{ error() }}</p>
+            }
+          </form>
+        </app-card>
       </div>
     </div>
   `,

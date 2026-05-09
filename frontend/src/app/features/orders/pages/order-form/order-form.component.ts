@@ -4,147 +4,73 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { OrderStore } from '../../order.store';
 import { CustomerService } from '../../../../core/services/customer.service';
 import { Customer } from '../../../../core/models/customer.model';
+import { CardComponent, InputComponent, SelectComponent, ButtonComponent } from '../../../../shared/components';
+import type { SelectOption } from '../../../../shared/components';
 
 @Component({
   selector: 'app-order-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule],
-  styles: [
-    `
-      .form-card {
-        max-width: 480px;
-        background: #fff;
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-      }
-      h2 {
-        margin: 0 0 1.25rem;
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: #212121;
-      }
-      .form-group {
-        margin-bottom: 1rem;
-      }
-      .form-group label {
-        display: block;
-        margin-bottom: 0.375rem;
-        font-size: 0.875rem;
-        color: #555;
-      }
-      .form-control {
-        display: block;
-        width: 100%;
-        padding: 0.5rem 0.75rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 0.875rem;
-        box-sizing: border-box;
-        transition: border-color 0.15s;
-      }
-      .form-control:focus {
-        outline: none;
-        border-color: #1976d2;
-      }
-      .field-error {
-        color: #d32f2f;
-        font-size: 0.75rem;
-        margin-top: 0.25rem;
-      }
-      .form-error {
-        color: #d32f2f;
-        font-size: 0.8125rem;
-        margin-bottom: 1rem;
-      }
-      .actions {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 1.5rem;
-      }
-      .btn {
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 4px;
-        font-size: 0.875rem;
-        cursor: pointer;
-        transition: opacity 0.15s;
-      }
-      .btn-primary {
-        background: #1976d2;
-        color: #fff;
-      }
-      .btn-primary:disabled {
-        opacity: 0.55;
-        cursor: not-allowed;
-      }
-      .btn-primary:not(:disabled):hover {
-        background: #1565c0;
-      }
-      .btn-cancel {
-        background: transparent;
-        border: 1px solid #ccc;
-        color: #555;
-      }
-      .btn-cancel:hover {
-        background: #f5f5f5;
-      }
-    `,
-  ],
+  imports: [ReactiveFormsModule, CardComponent, InputComponent, SelectComponent, ButtonComponent],
+  styles: [`
+    .form-card {
+      max-width: 480px;
+    }
+    h2 {
+      margin: 0 0 var(--space-lg);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .form-error {
+      color: var(--color-danger);
+      font-size: 0.8125rem;
+      margin-bottom: var(--space-md);
+    }
+    .actions {
+      display: flex;
+      gap: var(--space-sm);
+      margin-top: var(--space-lg);
+    }
+  `],
   template: `
     <div class="form-card">
-      <h2>{{ isEditMode() ? 'Edit Order' : 'New Order' }}</h2>
+      <app-card padding="lg">
+        <h2>{{ isEditMode() ? 'Edit Order' : 'New Order' }}</h2>
 
-      @if (store.error(); as err) {
-        <p class="form-error">{{ err }}</p>
-      }
+        @if (store.error(); as err) {
+          <p class="form-error">{{ err }}</p>
+        }
 
-      <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <label for="customerId">Customer</label>
-          <select
-            id="customerId"
-            class="form-control"
+        <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+          <app-select
             formControlName="customerId"
-          >
-            <option value="">Select a customer...</option>
-            @for (c of customers(); track c.id) {
-              <option [value]="c.id">{{ c.name }}</option>
-            }
-          </select>
-          @if (orderForm.get('customerId')?.invalid && orderForm.get('customerId')?.touched) {
-            <p class="field-error">Customer is required</p>
-          }
-        </div>
-
-        <div class="form-group">
-          <label for="total">Total</label>
-          <input
-            id="total"
-            type="number"
-            class="form-control"
-            formControlName="total"
-            step="0.01"
-            min="0.01"
+            label="Customer"
+            [options]="customerOptions"
+            placeholder="Select a customer..."
+            id="customerId"
           />
-          @if (orderForm.get('total')?.invalid && orderForm.get('total')?.touched) {
-            <p class="field-error">Total must be greater than 0</p>
-          }
-        </div>
 
-        <div class="actions">
-          <button type="submit" class="btn btn-primary" [disabled]="orderForm.invalid || saving()">
-            {{ saving() ? 'Saving...' : 'Save' }}
-          </button>
-          <button type="button" class="btn btn-cancel" (click)="goBack()">Cancel</button>
-        </div>
-      </form>
+          <app-input
+            formControlName="total"
+            label="Total"
+            type="number"
+            id="total"
+          />
+
+          <div class="actions">
+            <app-button type="submit" variant="primary" [disabled]="orderForm.invalid || saving()" [loading]="saving()">
+              {{ saving() ? 'Saving...' : 'Save' }}
+            </app-button>
+            <app-button type="button" variant="outline" (clicked)="goBack()">Cancel</app-button>
+          </div>
+        </form>
+      </app-card>
     </div>
   `,
 })
 export class OrderFormComponent implements OnInit {
-  private readonly store = inject(OrderStore);
+  readonly store = inject(OrderStore);
   private readonly customerService = inject(CustomerService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -153,6 +79,10 @@ export class OrderFormComponent implements OnInit {
   readonly saving = signal(false);
   readonly isEditMode = signal(false);
   readonly customers = signal<Customer[]>([]);
+
+  get customerOptions(): SelectOption[] {
+    return this.customers().map(c => ({ value: c.id, label: c.name }));
+  }
 
   private editId: number | null = null;
 

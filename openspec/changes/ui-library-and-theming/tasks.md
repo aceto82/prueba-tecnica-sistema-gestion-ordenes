@@ -45,22 +45,22 @@ Chain strategy: stacked-to-main
 - [x] 3.9 Create `ConfirmDialogComponent` — wraps Modal
 - [x] 3.10 Create barrel export `index.ts`
 
-## Phase 4: Component Migration ⏳ (PR-B — pending)
+## Phase 4: Component Migration ✅ (PR-B)
 
-- [ ] 4.1 Modify `HeaderComponent` — add theme toggle button
-- [ ] 4.2 Modify `SidebarComponent` — use CSS var colors
-- [ ] 4.3 Modify `LoginPageComponent` — use Card, Input, Button
-- [ ] 4.4 Modify `OrderListComponent` — use Button, Table, Pagination, Badge, Input, Select
-- [ ] 4.5 Modify `OrderFormComponent` — use Card, Input, Select, Button
-- [ ] 4.6 Modify `OrderDetailComponent` — use Card, Badge, Button
-- [ ] 4.7 Modify `CustomerListComponent` — use Button, Table, Pagination
-- [ ] 4.8 Modify `CustomerFormComponent` — use Card, Input, Button
-- [ ] 4.9 Modify `DashboardComponent` — use Card, CSS var colors
-- [ ] 4.10 Modify `UserListComponent` — use Button, Table, Pagination, Badge
-- [ ] 4.11 Modify `UserFormComponent` — use Card, Input, Select, Button
+- [x] 4.1 Modify `HeaderComponent` — add theme toggle button
+- [x] 4.2 Modify `SidebarComponent` — use CSS var colors
+- [x] 4.3 Modify `LoginPageComponent` — use Card, Input, Button
+- [x] 4.4 Modify `OrderListComponent` — use Button, Table, Pagination, Badge
+- [x] 4.5 Modify `OrderFormComponent` — use Card, Input, Select, Button
+- [x] 4.6 Modify `OrderDetailComponent` — use Card, Badge, Button
+- [x] 4.7 Modify `CustomerListComponent` — use Button, Table, Pagination
+- [x] 4.8 Modify `CustomerFormComponent` — use Card, Input, Button
+- [x] 4.9 Modify `DashboardComponent` — use Card, CSS var colors
+- [x] 4.10 Modify `UserListComponent` — use Button, Table, Pagination, Badge
+- [x] 4.11 Modify `UserFormComponent` — use Card, Input, Select, Button
 
-## Phase 5: Verify ⏳
+## Phase 5: Verify ✅
 
-- [ ] 5.1 Run `npm test` — verify all tests pass
-- [ ] 5.2 Run `npm run build` — verify production build succeeds
+- [x] 5.1 Run `npm test` — verify all tests pass
+- [x] 5.2 Run `npm run build` — verify production build succeeds
 - [ ] 5.3 Manual visual check: login, order list, order form, customer list, dashboard in both themes
