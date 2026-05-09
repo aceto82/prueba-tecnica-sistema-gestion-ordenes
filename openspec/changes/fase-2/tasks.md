@@ -84,31 +84,31 @@ Chain strategy: feature-branch-chain
 
 ## Phase 6: Frontend Routing Update
 
-- [ ] F2-T30 — Replace `loadComponent` in `app.routes.ts` with `loadChildren` for `orders` and `customers` paths. Ref: REQ-F1, REQ-F3, design §10. Effort: S. Accept: app still bootstraps; `router-outlet` renders.
-- [ ] F2-T31 — Create `features/orders/orders.routes.ts` exporting `ORDER_ROUTES` with `''` (list), `new` (form), `:id` (detail), `:id/edit` (form) using `loadComponent`. Ref: REQ-F1, REQ-F2. Effort: S. Accept: navigating to `/orders` renders `OrderListComponent` placeholder.
-- [ ] F2-T32 — Create `features/customers/customers.routes.ts` exporting `CUSTOMER_ROUTES` with `''` (list), `new` (form), `:id/edit` (form). Ref: REQ-F3. Effort: S. Accept: navigating to `/customers` renders `CustomersListComponent` placeholder.
+- [x] F2-T30 — Replace `loadComponent` in `app.routes.ts` with `loadChildren` for `orders` and `customers` paths. Ref: REQ-F1, REQ-F3, design §10. Effort: S. Accept: app still bootstraps; `router-outlet` renders.
+- [x] F2-T31 — Create `features/orders/orders.routes.ts` exporting `ORDER_ROUTES` with `''` (list), `new` (form), `:id` (detail), `:id/edit` (form) using `loadComponent`. Ref: REQ-F1, REQ-F2. Effort: S. Accept: navigating to `/orders` renders `OrderListComponent` placeholder.
+- [x] F2-T32 — Create `features/customers/customers.routes.ts` exporting `CUSTOMER_ROUTES` with `''` (list), `new` (form), `:id/edit` (form). Ref: REQ-F3. Effort: S. Accept: navigating to `/customers` renders `CustomersListComponent` placeholder.
 
 ---
 
 ## Phase 7: Frontend Models & HTTP Services
 
-- [ ] F2-T33 — Create `core/models/customer.model.ts` (`Customer`, `CustomerSummary`, `CreateCustomerRequest`, `Page<T>` generic) and `core/models/order.model.ts` (`Order`, `OrderListItem`, `OrderDetail`, `CreateOrderRequest`, `UpdateOrderRequest`, `OrderStatus`). Ref: design §4, §8. Effort: S. Accept: interfaces/types export correctly.
-- [ ] F2-T34 — Create `core/services/customer.service.ts`: thin `HttpClient` wrapper — `list(page, size)`, `findById(id)`, `create(req)`, `update(id, req)`. Ref: REQ-C1–C4. Effort: S. Accept: each method returns typed `Observable`; no state.
-- [ ] F2-T35 — Create `core/services/order.service.ts`: thin `HttpClient` wrapper — `list(params)`, `findById(id)`, `create(req)`, `update(id, req)`. Builds `HttpParams` from optional filter fields. Ref: REQ-O1–O4. Effort: S. Accept: list method only adds params present in the input object.
+- [x] F2-T33 — Create `core/models/customer.model.ts` (`Customer`, `CustomerSummary`, `CreateCustomerRequest`, `Page<T>` generic) and `core/models/order.model.ts` (`Order`, `OrderListItem`, `OrderDetail`, `CreateOrderRequest`, `UpdateOrderRequest`, `OrderStatus`). Ref: design §4, §8. Effort: S. Accept: interfaces/types export correctly.
+- [x] F2-T34 — Create `core/services/customer.service.ts`: thin `HttpClient` wrapper — `list(page, size)`, `findById(id)`, `create(req)`, `update(id, req)`. Ref: REQ-C1–C4. Effort: S. Accept: each method returns typed `Observable`; no state.
+- [x] F2-T35 — Create `core/services/order.service.ts`: thin `HttpClient` wrapper — `list(params)`, `findById(id)`, `create(req)`, `update(id, req)`. Builds `HttpParams` from optional filter fields. Ref: REQ-O1–O4. Effort: S. Accept: list method only adds params present in the input object.
 
 ---
 
 ## Phase 8: Frontend Stores
 
-- [ ] F2-T36 — Create `features/customers/customer.store.ts` mirroring `AuthStore` pattern: signals `customers`, `selectedCustomer`, `loading`, `error`, `currentPage`, `totalPages`; methods `load(page)`, `findById(id)`, `create(req)`, `update(id, req)`. Ref: REQ-F3. Effort: M. Accept: Jasmine test verifies `load` sets `customers` signal and `loading` goes false on complete.
-- [ ] F2-T37 — Create `features/orders/order.store.ts`: signals as per design §8; methods `load(patch)`, `findById(id)`, `create(req)`, `updateStatus(id, status)`. `load` merges patch into `_params` signal, calls `orderService.list`. Ref: REQ-F1, design §8. Effort: M. Accept: Jasmine test verifies `load` with `status` patch sends correct params.
+- [x] F2-T36 — Create `features/customers/customer.store.ts` mirroring `AuthStore` pattern: signals `customers`, `selectedCustomer`, `loading`, `error`, `currentPage`, `totalPages`; methods `load(page)`, `findById(id)`, `create(req)`, `update(id, req)`. Ref: REQ-F3. Effort: M. Accept: Jasmine test verifies `load` sets `customers` signal and `loading` goes false on complete.
+- [x] F2-T37 — Create `features/orders/order.store.ts`: signals as per design §8; methods `load(patch)`, `findById(id)`, `create(req)`, `updateStatus(id, status)`. `load` merges patch into `_params` signal, calls `orderService.list`. Ref: REQ-F1, design §8. Effort: M. Accept: Jasmine test verifies `load` with `status` patch sends correct params.
 
 ---
 
 ## Phase 9: Frontend Customers Module
 
-- [ ] F2-T38 — Create `features/customers/pages/customer-list/customer-list.component.ts`: standalone, OnPush; renders table from `CustomerStore.customers`; pagination controls wired to `store.load(page)`. Ref: REQ-F3. Effort: M. Accept: fakeAsync test verifies page change calls `store.load(1)`.
-- [ ] F2-T39 — Create `features/customers/pages/customer-form/customer-form.component.ts`: standalone, OnPush; reactive form with `name` (required) + `email` (required, Validators.email); on `ngOnInit` if `:id` param present → load and patch; submit calls `store.create` or `store.update`; navigates to `/customers` on success. Ref: REQ-F3 (create/edit scenarios). Effort: M. Accept: Jasmine test: submit with invalid email does not call `store.create`; valid submit calls `store.create` and router navigates.
+- [x] F2-T38 — Create `features/customers/pages/customer-list/customer-list.component.ts`: standalone, OnPush; renders table from `CustomerStore.customers`; pagination controls wired to `store.load(page)`. Ref: REQ-F3. Effort: M. Accept: fakeAsync test verifies page change calls `store.load(1)`.
+- [x] F2-T39 — Create `features/customers/pages/customer-form/customer-form.component.ts`: standalone, OnPush; reactive form with `name` (required) + `email` (required, Validators.email); on `ngOnInit` if `:id` param present → load and patch; submit calls `store.create` or `store.update`; navigates to `/customers` on success. Ref: REQ-F3 (create/edit scenarios). Effort: M. Accept: Jasmine test: submit with invalid email does not call `store.create`; valid submit calls `store.create` and router navigates.
 
 ---
 
