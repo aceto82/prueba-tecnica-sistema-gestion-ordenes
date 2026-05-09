@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderStore } from '../../order.store';
 import { CustomerService } from '../../../../core/services/customer.service';
@@ -10,7 +10,7 @@ import { Customer } from '../../../../core/models/customer.model';
   selector: 'app-order-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, NgIf, NgFor, CurrencyPipe],
+  imports: [ReactiveFormsModule, NgIf, NgFor],
   styles: [
     `
       .form-card {

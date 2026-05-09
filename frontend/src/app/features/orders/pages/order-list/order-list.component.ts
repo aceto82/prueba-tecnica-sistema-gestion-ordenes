@@ -3,7 +3,7 @@ import { CurrencyPipe, DatePipe, NgFor, NgIf, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
-import { OrderStore, OrderListParams } from '../../order.store';
+import { OrderStore } from '../../order.store';
 import { OrderStatus, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '../../../../core/models/order.model';
 import { AuthStore } from '../../../auth/auth.store';
 
@@ -263,9 +263,7 @@ export class OrderListComponent implements OnInit {
     this.store.load({ page: this.store.currentPage() + 1 }).subscribe();
   }
 
-  deleteOrder(id: number): void {
-    // TODO: Implement delete functionality via store
-    console.log('Delete order:', id);
-    // Placeholder for delete - actual implementation would call store.delete(id)
+  deleteOrder(_id: number): void {
+    // TODO: implement delete via store.delete(id)
   }
 }
