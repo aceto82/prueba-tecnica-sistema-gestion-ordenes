@@ -29,6 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -168,6 +169,34 @@ class OrderServiceTest {
 
         assertThat(result.getContent()).hasSize(2);
         assertThat(result.getTotalElements()).isEqualTo(2);
+    }
+
+    // --- TD-3: DELETE /api/orders/{id} ---
+
+    @Test
+    void deleteOrder_existingOrder_deletesSuccessfully() {
+        // GIVEN an order with id 10 exists
+        when(orderRepository.existsById(10L)).thenReturn(true);
+
+        // WHEN deleteOrder is called
+        orderService.deleteOrder(10L);
+
+        // THEN the repository's deleteById is invoked once with the given id
+        verify(orderRepository).deleteById(10L);
+    }
+
+    @Test
+    void deleteOrder_nonExistentOrder_throwsEntityNotFoundException() {
+        // GIVEN no order with id 99 exists
+        when(orderRepository.existsById(99L)).thenReturn(false);
+
+        // WHEN deleteOrder is called, THEN it throws EntityNotFoundException
+        assertThatThrownBy(() -> orderService.deleteOrder(99L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("99");
+
+        // AND deleteById is never called
+        verify(orderRepository, never()).deleteById(any());
     }
 
     @Test

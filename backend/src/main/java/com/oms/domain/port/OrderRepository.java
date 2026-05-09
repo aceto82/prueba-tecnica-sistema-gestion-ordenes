@@ -10,6 +10,8 @@ public interface OrderRepository {
 
     Optional<Order> findById(Long id);
 
+    void deleteById(Long id);
+
     Page<Order> findAll(Pageable pageable);
 
     Page<Order> findAll(OrderFilter filter, Pageable pageable);
