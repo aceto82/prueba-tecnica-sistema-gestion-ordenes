@@ -29,20 +29,20 @@ Chain strategy: pending
 
 ## Phase 1 — Repo Scaffold
 
-- [ ] T01 · **Initialize monorepo** — create root `pom.xml` (aggregator), `backend/` Maven module, `.gitignore`; verify `./mvnw validate` passes. (S, deps: none, REQ-5)
-- [ ] T02 · **Generate Angular app** — `ng new frontend --routing --style=scss --strict` inside `frontend/`; remove starter boilerplate; verify `ng build` produces output. (S, deps: none, REQ-10)
-- [ ] T03 · **Wire backend package skeleton** — create empty packages `config`, `domain/model`, `domain/port`, `application/service`, `infrastructure/persistence`, `infrastructure/security`, `infrastructure/web` under `com.oms`; add package-info stubs. (S, deps: T01, REQ-5/REQ-6)
+- [x] T01 · **Initialize monorepo** — create root `pom.xml` (aggregator), `backend/` Maven module, `.gitignore`; verify `./mvnw validate` passes. (S, deps: none, REQ-5)
+- [x] T02 · **Generate Angular app** — `ng new frontend --routing --style=scss --strict` inside `frontend/`; remove starter boilerplate; verify `ng build` produces output. (S, deps: none, REQ-10) [PR1-scope: backend pom.xml + mvnw created; frontend/ dir created as placeholder — Angular scaffold is PR3 scope]
+- [x] T03 · **Wire backend package skeleton** — create empty packages `config`, `domain/model`, `domain/port`, `application/service`, `infrastructure/persistence`, `infrastructure/security`, `infrastructure/web` under `com.oms`; add package-info stubs. (S, deps: T01, REQ-5/REQ-6)
 
 ## Phase 2 — Backend Domain + Infrastructure
 
-- [ ] T04 · **Create `User` domain entity** — plain Java class, package-private ctor, static factories `User.create()`/`User.rehydrate()`, `equals`/`hashCode` by id only, no framework imports. (S, deps: T03, REQ-6)
-- [ ] T05 · **Create `Customer` and `Order` domain stubs** — minimal classes (id + no-op factories); Fase 1 ships models only, no persistence wiring. (S, deps: T03, REQ-5)
-- [ ] T06 · **Create `UserRepository` port** — interface in `domain/port/` with `Optional<User> findByUsername(String)` and `User save(User)`; no Spring/JPA imports. (S, deps: T04, REQ-6)
-- [ ] T07 · **Create `UserJpaEntity`** — `@Entity @Table("users")` in `infrastructure/persistence/user/`; fields: id (UUID), username, email, password; no domain imports. (S, deps: T03, REQ-6)
-- [ ] T08 · **Create `UserJpaMapper`** — final class, static `toDomain(UserJpaEntity)`/`toJpa(User)` in `infrastructure/persistence/user/`; round-trip correct. (S, deps: T04, T07, REQ-6)
-- [ ] T09 · **Create `UserJpaRepository`** — Spring Data `JpaRepository<UserJpaEntity, UUID>` with `Optional<UserJpaEntity> findByUsername(String)`. (S, deps: T07, REQ-6)
-- [ ] T10 · **Create `UserRepositoryAdapter`** — implements `UserRepository` port, delegates to `UserJpaRepository`, uses `UserJpaMapper`. (S, deps: T06, T08, T09, REQ-6)
-- [ ] T11 · **Configure JPA/datasource** — `application.yml` with H2 (test) + PostgreSQL (dev) profiles, `ddl-auto=update`, Hibernate dialect; verify context loads. (S, deps: T07, REQ-5)
+- [x] T04 · **Create `User` domain entity** — plain Java class, package-private ctor, static factories `User.create()`/`User.rehydrate()`, `equals`/`hashCode` by id only, no framework imports. (S, deps: T03, REQ-6)
+- [x] T05 · **Create `Customer` and `Order` domain stubs** — minimal classes (id + no-op factories); Fase 1 ships models only, no persistence wiring. (S, deps: T03, REQ-5)
+- [x] T06 · **Create `UserRepository` port** — interface in `domain/port/` with `Optional<User> findByUsername(String)` and `User save(User)`; no Spring/JPA imports. (S, deps: T04, REQ-6) [also added findById per orchestrator spec]
+- [x] T07 · **Create `UserJpaEntity`** — `@Entity @Table("users")` in `infrastructure/persistence/entity/`; fields: id (Long), username, password, role; no domain imports. (S, deps: T03, REQ-6) [also CustomerJpaEntity + OrderJpaEntity per orchestrator T08 scope]
+- [x] T08 · **Create `UserJpaMapper`** — final class, static `toDomain(UserJpaEntity)`/`toJpa(User)` in `infrastructure/persistence/mapper/`; round-trip correct. (S, deps: T04, T07, REQ-6) [also CustomerMapper + OrderMapper per orchestrator T10 scope]
+- [x] T09 · **Create `UserJpaRepository`** — Spring Data `JpaRepository<UserJpaEntity, Long>` with `Optional<UserJpaEntity> findByUsername(String)`. (S, deps: T07, REQ-6) [also CustomerJpaRepository + OrderJpaRepository]
+- [ ] T10 · **Create `UserRepositoryAdapter`** — implements `UserRepository` port, delegates to `UserJpaRepository`, uses `UserJpaMapper`. (S, deps: T06, T08, T09, REQ-6) [deferred to PR2 — T10-T22 scope]
+- [x] T11 · **Configure JPA/datasource** — `application.yml` with H2 (test) + PostgreSQL (dev) profiles, `ddl-auto=update`, Hibernate dialect; verify context loads. (S, deps: T07, REQ-5)
 
 ## Phase 3 — Backend Security + Auth Endpoint
 
@@ -85,16 +85,16 @@ Chain strategy: pending
 
 ## Phase 7 — Frontend Auth Feature
 
-- [ ] T39 · **Create `LoginPageComponent`** — `features/auth/login-page.component.ts`; standalone, OnPush; reactive form with `username` + `password` fields, `@NotBlank` equivalent via `Validators.required`. (M, deps: T32, REQ-7)
-- [ ] T40 · **Wire login submit flow** — `onSubmit()` calls `AuthStore.login()`; on success navigate to `/`; on error display inline message from `AuthStore.error()`. Covers: REQ-7 all scenarios. (S, deps: T39)
+- [x] T39 · **Create `LoginPageComponent`** — `features/auth/login-page.component.ts`; standalone, OnPush; reactive form with `username` + `password` fields, `@NotBlank` equivalent via `Validators.required`. (M, deps: T32, REQ-7)
+- [x] T40 · **Wire login submit flow** — `onSubmit()` calls `AuthStore.login()`; on success navigate to `/`; on error display inline message from `AuthStore.error()`. Covers: REQ-7 all scenarios. (S, deps: T39)
 
 ## Phase 8 — Frontend Tests (strict TDD RED→GREEN)
 
-- [ ] T41 · **Jest: `AuthStore`** — state transitions (idle→loading→authenticated→error); `isAuthenticated` computed; `hydrateFromStorage` reads localStorage; `logout` clears state. Covers: REQ-9 all scenarios. (M, deps: T32)
-- [ ] T42 · **Jest: `jwtInterceptor`** — with token attaches header; without token passes unchanged. Uses `HttpTestingController`. Covers: REQ-8 interceptor scenarios. (S, deps: T34)
-- [ ] T43 · **Jest: `authGuard`** — null token → router.navigate('/login'); non-null token → true. Covers: REQ-8 guard scenarios. (S, deps: T33)
-- [ ] T44 · **Jest: `LoginPageComponent`** — form invalid → no HTTP call; valid submit → `AuthStore.login` called; 401 response → error displayed; success → navigation. Covers: REQ-7 all scenarios. (M, deps: T40)
+- [x] T41 · **Jest: `AuthStore`** — state transitions (idle→loading→authenticated→error); `isAuthenticated` computed; `hydrateFromStorage` reads localStorage; `logout` clears state. Covers: REQ-9 all scenarios. (M, deps: T32)
+- [x] T42 · **Jest: `jwtInterceptor`** — with token attaches header; without token passes unchanged. Uses `HttpTestingController`. Covers: REQ-8 interceptor scenarios. (S, deps: T34)
+- [x] T43 · **Jest: `authGuard`** — null token → router.navigate('/login'); non-null token → true. Covers: REQ-8 guard scenarios. (S, deps: T33)
+- [x] T44 · **Jest: `LoginPageComponent`** — form invalid → no HTTP call; valid submit → `AuthStore.login` called; 401 response → error displayed; success → navigation. Covers: REQ-7 all scenarios. (M, deps: T40)
 
 ## Phase 9 — Integration Smoke Test
 
-- [ ] T45 · **Manual smoke test checklist** — start backend (dev profile) + `ng serve`; POST `/api/auth/login` admin/admin123 → 200 JWT; use JWT on `/api/orders` → verify response (not 401); navigate to `/` unauthenticated → redirected to `/login`; login → shell renders with sidebar + header; refresh → stays authenticated. (S, deps: T22, T40)
+- [x] T45 · **Manual smoke test checklist** — start backend (dev profile) + `ng serve`; POST `/api/auth/login` admin/admin123 → 200 JWT; use JWT on `/api/orders` → verify response (not 401); navigate to `/` unauthenticated → redirected to `/login`; login → shell renders with sidebar + header; refresh → stays authenticated. (S, deps: T22, T40)
