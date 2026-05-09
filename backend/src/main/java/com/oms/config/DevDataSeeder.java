@@ -52,11 +52,18 @@ public class DevDataSeeder implements CommandLineRunner {
 
     private void seedCustomers() {
         if (customerJpaRepository.count() == 0) {
-            customerJpaRepository.saveAll(List.of(
-                    new CustomerJpaEntity(null, "Alice Smith", "alice@example.com"),
-                    new CustomerJpaEntity(null, "Bob Jones", "bob@example.com"),
-                    new CustomerJpaEntity(null, "Carol White", "carol@example.com")
-            ));
+            User admin = userRepository.findByUsername("admin").orElseThrow();
+
+            CustomerJpaEntity alice = new CustomerJpaEntity(null, "Alice Smith", "alice@example.com");
+            alice.setUserId(admin.getUsername());
+
+            CustomerJpaEntity bob = new CustomerJpaEntity(null, "Bob Jones", "bob@example.com");
+            bob.setUserId(admin.getUsername());
+
+            CustomerJpaEntity carol = new CustomerJpaEntity(null, "Carol White", "carol@example.com");
+            carol.setUserId(admin.getUsername());
+
+            customerJpaRepository.saveAll(List.of(alice, bob, carol));
         }
     }
 

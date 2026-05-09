@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -28,6 +29,11 @@ class JwtServiceTest {
 
     private UserDetails user(String username) {
         return new User(username, "password", Collections.emptyList());
+    }
+
+    private UserDetails userWithRole(String username, String role) {
+        return new User(username, "password",
+                List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role)));
     }
 
     @Test
@@ -70,5 +76,28 @@ class JwtServiceTest {
         boolean valid = validatingService.isTokenValid(expiredToken, userDetails);
 
         assertThat(valid).isFalse();
+    }
+
+    @Test
+    void generateToken_includesRoleClaim() {
+        JwtService service = buildService(EXPIRATION_MS);
+
+        String token = service.generateToken(userWithRole("admin", "ADMIN"));
+
+        // Decode payload to inspect claims
+        String payload = new String(java.util.Base64.getUrlDecoder().decode(token.split("\\.")[1]));
+        assertThat(payload).contains("\"role\"");
+        assertThat(payload).contains("\"ADMIN\"");
+    }
+
+    @Test
+    void generateToken_includesRoleClaimForUser() {
+        JwtService service = buildService(EXPIRATION_MS);
+
+        String token = service.generateToken(userWithRole("alice", "USER"));
+
+        String payload = new String(java.util.Base64.getUrlDecoder().decode(token.split("\\.")[1]));
+        assertThat(payload).contains("\"role\"");
+        assertThat(payload).contains("\"USER\"");
     }
 }
