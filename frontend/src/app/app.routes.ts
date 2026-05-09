@@ -17,16 +17,16 @@ export const appRoutes: Routes = [
     children: [
       {
         path: 'orders',
-        loadComponent: () =>
-          import('./features/orders/orders.component').then(
-            (m) => m.OrdersComponent
+        loadChildren: () =>
+          import('./features/orders/orders.routes').then(
+            (m) => m.ORDER_ROUTES
           ),
       },
       {
         path: 'customers',
-        loadComponent: () =>
-          import('./features/customers/customers.component').then(
-            (m) => m.CustomersComponent
+        loadChildren: () =>
+          import('./features/customers/customers.routes').then(
+            (m) => m.CUSTOMER_ROUTES
           ),
       },
       {
