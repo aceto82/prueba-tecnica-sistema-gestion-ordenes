@@ -114,21 +114,21 @@ Chain strategy: feature-branch-chain
 
 ## Phase 10: Frontend Orders Module
 
-- [ ] F2-T40 — Create `features/orders/pages/order-list/order-list.component.ts`: standalone, OnPush; table from `OrderStore.orders`; `Subject<string>` + `debounceTime(300) + distinctUntilChanged() + switchMap` for search; status `<select>` calls `store.load({status, page:0})` directly; pagination wired. Ref: REQ-F1. Effort: L. Accept: fakeAsync test: two rapid keystrokes → only one HTTP call after 300 ms tick.
-- [ ] F2-T41 — Create `features/orders/pages/order-form/order-form.component.ts`: standalone, OnPush; reactive form with `customerId` (required) + `total` (required, min 0.01); on edit mode load order and patch; submit calls `store.create` or `store.updateStatus`/total; navigate on success. Ref: REQ-F2. Effort: M. Accept: Jasmine: total ≤ 0 keeps form invalid; valid submit calls correct store method.
-- [ ] F2-T42 — Create `features/orders/pages/order-detail/order-detail.component.ts`: standalone, OnPush; loads order via `store.findById(id)` on init; displays `customer.name`, `status`, `total`, `createdAt`. Ref: REQ-O2. Effort: S. Accept: test verifies `findById` called with route param id.
+- [x] F2-T40 — Create `features/orders/pages/order-list/order-list.component.ts`: standalone, OnPush; table from `OrderStore.orders`; `Subject<string>` + `debounceTime(300) + distinctUntilChanged() + switchMap` for search; status `<select>` calls `store.load({status, page:0})` directly; pagination wired. Ref: REQ-F1. Effort: L. Accept: fakeAsync test: two rapid keystrokes → only one HTTP call after 300 ms tick.
+- [x] F2-T41 — Create `features/orders/pages/order-form/order-form.component.ts`: standalone, OnPush; reactive form with `customerId` (required) + `total` (required, min 0.01); on edit mode load order and patch; submit calls `store.create` or `store.updateStatus`/total; navigate on success. Ref: REQ-F2. Effort: M. Accept: Jasmine: total ≤ 0 keeps form invalid; valid submit calls correct store method.
+- [x] F2-T42 — Create `features/orders/pages/order-detail/order-detail.component.ts`: standalone, OnPush; loads order via `store.findById(id)` on init; displays `customer.name`, `status`, `total`, `createdAt`. Ref: REQ-O2. Effort: S. Accept: test verifies `findById` called with route param id.
 
 ---
 
 ## Phase 11: Frontend Tests
 
-- [ ] F2-T43 — Jasmine + `HttpTestingController` tests for `CustomerService`: verify URL, method, and typed response for `list`, `findById`, `create`, `update`. Ref: REQ-C1–C4. Effort: M. Accept: 4 test cases green; `TestBed.verify()` passes.
-- [ ] F2-T44 — Jasmine + `HttpTestingController` tests for `OrderService`: verify URL construction with optional params for `list`; verify method + payload for `create`/`update`. Ref: REQ-O1–O4. Effort: M. Accept: 4 test cases green.
-- [ ] F2-T45 — Jasmine tests for `CustomerStore`: `load` patches signals; `create` appends new item; `update` replaces item; error signal set on HTTP failure. Ref: REQ-F3. Effort: M. Accept: 4 test cases green.
-- [ ] F2-T46 — Jasmine tests for `OrderStore`: `load` with different patches merges params correctly; status filter param included when set; page param updates. Ref: REQ-F1. Effort: M. Accept: 3 test cases green.
+- [x] F2-T43 — Jasmine + `HttpTestingController` tests for `CustomerService`: verify URL, method, and typed response for `list`, `findById`, `create`, `update`. Ref: REQ-C1–C4. Effort: M. Accept: 4 test cases green; `TestBed.verify()` passes.
+- [x] F2-T44 — Jasmine + `HttpTestingController` tests for `OrderService`: verify URL construction with optional params for `list`; verify method + payload for `create`/`update`. Ref: REQ-O1–O4. Effort: M. Accept: 4 test cases green.
+- [x] F2-T45 — Jasmine tests for `CustomerStore`: `load` patches signals; `create` appends new item; `update` replaces item; error signal set on HTTP failure. Ref: REQ-F3. Effort: M. Accept: 4 test cases green.
+- [x] F2-T46 — Jasmine tests for `OrderStore`: `load` with different patches merges params correctly; status filter param included when set; page param updates. Ref: REQ-F1. Effort: M. Accept: 3 test cases green.
 
 ---
 
 ## Phase 12: Integration Smoke
 
-- [ ] F2-T47 — End-to-end smoke: start app locally; create a customer via `POST /api/customers`; create an order for that customer; list orders with `customerName` filter; transition order PENDING→PROCESSING; verify 400 on PROCESSING→PENDING. Ref: REQ-C3, REQ-O1, REQ-O3, REQ-O5. Effort: M. Accept: all 5 HTTP calls return expected status codes.
+- [x] F2-T47 — End-to-end smoke: start app locally; create a customer via `POST /api/customers`; create an order for that customer; list orders with `customerName` filter; transition order PENDING→PROCESSING; verify 400 on PROCESSING→PENDING. Ref: REQ-C3, REQ-O1, REQ-O3, REQ-O5. Effort: M. Accept: all 5 HTTP calls return expected status codes.
