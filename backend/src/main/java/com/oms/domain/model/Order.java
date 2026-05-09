@@ -1,5 +1,7 @@
 package com.oms.domain.model;
 
+import com.oms.domain.exception.InvalidStatusTransitionException;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -66,6 +68,16 @@ public class Order {
 
     public void setCustomerId(Long customerId) {
         this.customerId = customerId;
+    }
+
+    public void transitionTo(OrderStatus next) {
+        boolean valid = switch (this.status) {
+            case PENDING -> next == OrderStatus.PROCESSING || next == OrderStatus.CANCELLED;
+            case PROCESSING -> next == OrderStatus.COMPLETED || next == OrderStatus.CANCELLED;
+            default -> false;
+        };
+        if (!valid) throw new InvalidStatusTransitionException(this.status, next);
+        this.status = next;
     }
 
     @Override
