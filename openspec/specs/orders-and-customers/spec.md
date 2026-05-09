@@ -155,6 +155,8 @@ The system MUST expose `GET /api/orders` supporting pagination (`page`, `size`, 
 
 Filters are optional and combinable. Each item in the page MUST embed `CustomerSummary { id, name }`. The query MUST NOT produce N+1 database calls.
 
+> **RBAC Extension (Fase 3)**: When the requester's role is `USER`, the response includes only orders whose customer is linked to that user via `customer.userId`. ADMIN sees all orders. See `openspec/changes/archive/2026-05-09-fase-3/specs/orders-management/spec.md`.
+
 #### Scenario: Unfiltered list returns all orders paginated
 
 - GIVEN three orders exist

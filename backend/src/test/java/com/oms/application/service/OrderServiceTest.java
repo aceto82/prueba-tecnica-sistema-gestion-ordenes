@@ -5,6 +5,7 @@ import com.oms.domain.model.Customer;
 import com.oms.domain.model.Order;
 import com.oms.domain.model.OrderStatus;
 import com.oms.domain.port.CustomerRepository;
+import com.oms.domain.port.OrderFilter;
 import com.oms.domain.port.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -12,14 +13,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -110,5 +117,34 @@ class OrderServiceTest {
 
         assertThatThrownBy(() -> orderService.updateOrderDetails(11L, new BigDecimal("250.00")))
                 .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void listOrders_withUsername_passesUsernameToRepository() {
+        OrderFilter filter = new OrderFilter(null, null, null, null);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Order> expectedPage = new PageImpl<>(List.of(pendingOrder()), pageable, 1);
+
+        when(orderRepository.findAll(eq(filter), eq(pageable), eq("alice")))
+                .thenReturn(expectedPage);
+
+        Page<Order> result = orderService.listOrders(filter, pageable, "alice");
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getId()).isEqualTo(10L);
+    }
+
+    @Test
+    void listOrders_withoutUsername_passesNullToRepository() {
+        OrderFilter filter = new OrderFilter(null, null, null, null);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Order> expectedPage = new PageImpl<>(List.of(pendingOrder()), pageable, 1);
+
+        when(orderRepository.findAll(eq(filter), eq(pageable), eq(null)))
+                .thenReturn(expectedPage);
+
+        Page<Order> result = orderService.listOrders(filter, pageable, null);
+
+        assertThat(result.getContent()).hasSize(1);
     }
 }

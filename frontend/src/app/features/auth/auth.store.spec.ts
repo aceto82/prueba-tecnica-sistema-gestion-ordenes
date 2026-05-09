@@ -95,4 +95,35 @@ describe('AuthStore', () => {
     const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
     req.flush({ token: FAKE_JWT });
   });
+
+  it('isAdmin should return true when role is ADMIN', (done) => {
+    authStore.login({ username: 'admin', password: 'admin123' }).subscribe({
+      next: () => {
+        expect(authStore.isAdmin()).toBe(true);
+        done();
+      },
+      error: done.fail,
+    });
+
+    const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
+    req.flush({ token: FAKE_JWT });
+  });
+
+  it('isAdmin should return false when role is USER', (done) => {
+    const userJwt =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
+      'eyJzdWIiOiJ1c2VyMSIsInJvbGUiOiJVU0VSIn0.' +
+      'fakeSignature';
+    
+    authStore.login({ username: 'user1', password: 'password' }).subscribe({
+      next: () => {
+        expect(authStore.isAdmin()).toBe(false);
+        done();
+      },
+      error: done.fail,
+    });
+
+    const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
+    req.flush({ token: userJwt });
+  });
 });
