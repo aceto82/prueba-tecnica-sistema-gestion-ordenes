@@ -30,6 +30,13 @@ export const appRoutes: Routes = [
           ),
       },
       {
+        path: 'users',
+        loadChildren: () =>
+          import('./features/users/users.routes').then(
+            (m) => m.USER_ROUTES
+          ),
+      },
+      {
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then(
