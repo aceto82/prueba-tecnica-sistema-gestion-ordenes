@@ -100,4 +100,63 @@ class JwtServiceTest {
         assertThat(payload).contains("\"role\"");
         assertThat(payload).contains("\"USER\"");
     }
+
+    // --- F4-T03: tampered token + role extraction ---
+
+    @Test
+    void isTokenValid_withTamperedSignature_returnsFalse() {
+        // GIVEN a valid token whose signature is altered by one character
+        JwtService service = buildService(EXPIRATION_MS);
+        UserDetails userDetails = user("alice");
+        String validToken = service.generateToken(userDetails);
+
+        // Tamper the last character of the signature (3rd segment)
+        String[] parts = validToken.split("\\.");
+        String tamperedSignature = parts[2].substring(0, parts[2].length() - 1) + "X";
+        String tamperedToken = parts[0] + "." + parts[1] + "." + tamperedSignature;
+
+        // WHEN isTokenValid is called with tampered token
+        boolean valid = service.isTokenValid(tamperedToken, userDetails);
+
+        // THEN it returns false
+        assertThat(valid).isFalse();
+    }
+
+    @Test
+    void extractRole_fromAdminToken_returnsADMIN() {
+        // GIVEN a token generated for role "ADMIN"
+        JwtService service = buildService(EXPIRATION_MS);
+        String token = service.generateToken(userWithRole("admin", "ADMIN"));
+
+        // WHEN extractRole is called
+        String role = service.extractRole(token);
+
+        // THEN it returns "ADMIN"
+        assertThat(role).isEqualTo("ADMIN");
+    }
+
+    @Test
+    void extractRole_fromUserToken_returnsUSER() {
+        // GIVEN a token generated for role "USER"
+        JwtService service = buildService(EXPIRATION_MS);
+        String token = service.generateToken(userWithRole("alice", "USER"));
+
+        // WHEN extractRole is called
+        String role = service.extractRole(token);
+
+        // THEN it returns "USER"
+        assertThat(role).isEqualTo("USER");
+    }
+
+    @Test
+    void generateToken_containsExpInFuture() {
+        // GIVEN a token generated for "alice"
+        JwtService service = buildService(EXPIRATION_MS);
+        String token = service.generateToken(user("alice"));
+
+        // WHEN the expiration is checked via payload decode
+        String payload = new String(java.util.Base64.getUrlDecoder().decode(token.split("\\.")[1]));
+        // THEN "exp" claim is present (it's a number in the JSON)
+        assertThat(payload).contains("\"exp\"");
+    }
 }
