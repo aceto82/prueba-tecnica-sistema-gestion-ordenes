@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CustomerStore } from '../../customer.store';
 
@@ -7,7 +6,7 @@ import { CustomerStore } from '../../customer.store';
   selector: 'app-customer-list',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgFor, NgIf, RouterLink],
+  imports: [RouterLink],
   styles: [
     `
       .page-header {
@@ -107,43 +106,50 @@ import { CustomerStore } from '../../customer.store';
       <a routerLink="/customers/new" class="btn btn-primary">New Customer</a>
     </div>
 
-    <ng-container *ngIf="store.loading(); else loaded">
+    @if (store.loading()) {
       <div class="loading-overlay">Loading customers...</div>
-    </ng-container>
+    } @else {
+      @if (store.error(); as err) {
+        <div class="error-state">{{ err }}</div>
+      }
 
-    <ng-template #loaded>
-      <div *ngIf="store.error() as err" class="error-state">{{ err }}</div>
+      @if (!store.error()) {
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (customer of store.customers(); track customer.id) {
+              <tr>
+                <td>{{ customer.id }}</td>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.email }}</td>
+                <td>
+                  <a [routerLink]="['/customers', customer.id, 'edit']" class="btn btn-outline">Edit</a>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="empty-state">No customers found. Create your first customer!</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
 
-      <table *ngIf="!store.error()">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let customer of store.customers(); trackBy: trackById">
-            <td>{{ customer.id }}</td>
-            <td>{{ customer.name }}</td>
-            <td>{{ customer.email }}</td>
-            <td>
-              <a [routerLink]="['/customers', customer.id, 'edit']" class="btn btn-outline">Edit</a>
-            </td>
-          </tr>
-          <tr *ngIf="store.isEmpty()">
-            <td colspan="4" class="empty-state">No customers found. Create your first customer!</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="pagination" *ngIf="store.totalPages() > 1">
-        <button class="btn btn-outline" (click)="prevPage()" [disabled]="store.currentPage() === 0">Previous</button>
-        <span>Page {{ store.currentPage() + 1 }} of {{ store.totalPages() }}</span>
-        <button class="btn btn-outline" (click)="nextPage()" [disabled]="!store.hasNext()">Next</button>
-      </div>
-    </ng-template>
+      @if (store.totalPages() > 1) {
+        <div class="pagination">
+          <button class="btn btn-outline" (click)="prevPage()" [disabled]="store.currentPage() === 0">Previous</button>
+          <span>Page {{ store.currentPage() + 1 }} of {{ store.totalPages() }}</span>
+          <button class="btn btn-outline" (click)="nextPage()" [disabled]="!store.hasNext()">Next</button>
+        </div>
+      }
+    }
   `,
 })
 export class CustomerListComponent implements OnInit {
@@ -159,9 +165,5 @@ export class CustomerListComponent implements OnInit {
 
   nextPage(): void {
     this.store.load({ page: this.store.currentPage() + 1 }).subscribe();
-  }
-
-  trackById(_index: number, item: { id: number }): number {
-    return item.id;
   }
 }

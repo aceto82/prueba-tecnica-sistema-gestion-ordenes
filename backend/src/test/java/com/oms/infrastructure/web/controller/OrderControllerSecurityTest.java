@@ -111,6 +111,16 @@ class OrderControllerSecurityTest {
     // --- Scenario: USER cannot delete orders (ADMIN-only endpoint per SecurityConfig) ---
     // SecurityConfig: .requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasRole("ADMIN")
 
+    // --- TD-3: ADMIN can delete ---
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void deleteOrder_withAdminRole_returns204() throws Exception {
+        mockMvc.perform(delete("/api/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
     @Test
     @WithMockUser(roles = "USER")
     void deleteOrder_withUserRole_returns403() throws Exception {

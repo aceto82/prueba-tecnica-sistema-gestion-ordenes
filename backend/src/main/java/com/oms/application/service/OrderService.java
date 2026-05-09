@@ -59,4 +59,11 @@ public class OrderService {
         order.transitionTo(newStatus);
         return orderRepository.save(order);
     }
+
+    public void deleteOrder(Long id) {
+        if (!orderRepository.existsById(id)) {
+            throw new EntityNotFoundException("Order not found with id: " + id);
+        }
+        orderRepository.deleteById(id);
+    }
 }

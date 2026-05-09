@@ -26,6 +26,8 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -170,6 +172,34 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(7))
                 .andExpect(jsonPath("$.status").value("PROCESSING"));
+    }
+
+    // --- TD-3: DELETE /api/orders/{id} ---
+
+    @Test
+    void deleteOrder_existingOrder_returns204() throws Exception {
+        // GIVEN an existing order
+        // WHEN DELETE /api/orders/7
+        mockMvc.perform(delete("/api/orders/7")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        // THEN orderService.deleteOrder(7L) is called
+        verify(orderService).deleteOrder(7L);
+    }
+
+    @Test
+    void deleteOrder_nonExistentOrder_returns404() throws Exception {
+        // GIVEN no order with id 999 exists
+        doThrow(new EntityNotFoundException("Order not found with id: 999"))
+                .when(orderService).deleteOrder(999L);
+
+        // WHEN DELETE /api/orders/999, THEN 404
+        mockMvc.perform(delete("/api/orders/999")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.detail").value("Order not found with id: 999"));
     }
 
     @Test
