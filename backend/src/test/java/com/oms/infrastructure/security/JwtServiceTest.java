@@ -105,14 +105,20 @@ class JwtServiceTest {
 
     @Test
     void isTokenValid_withTamperedSignature_returnsFalse() {
-        // GIVEN a valid token whose signature is altered by one character
+        // GIVEN a valid token whose signature is altered at the byte level
         JwtService service = buildService(EXPIRATION_MS);
         UserDetails userDetails = user("alice");
         String validToken = service.generateToken(userDetails);
 
-        // Tamper the last character of the signature (3rd segment)
+        // Decode signature to raw bytes, flip every bit of the first byte, re-encode.
+        // XOR with 0xFF flips ALL 8 bits — the resulting 32-byte sequence
+        // cannot collide with the original HMAC, making this deterministic.
         String[] parts = validToken.split("\\.");
-        String tamperedSignature = parts[2].substring(0, parts[2].length() - 1) + "X";
+        byte[] sigBytes = java.util.Base64.getUrlDecoder().decode(parts[2]);
+        sigBytes[0] = (byte) (sigBytes[0] ^ 0xFF);
+        String tamperedSignature = java.util.Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(sigBytes);
         String tamperedToken = parts[0] + "." + parts[1] + "." + tamperedSignature;
 
         // WHEN isTokenValid is called with tampered token
