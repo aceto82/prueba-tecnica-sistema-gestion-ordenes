@@ -21,6 +21,9 @@ public class CustomerJpaEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "user_id")
+    private String userId;
+
     public CustomerJpaEntity() {
     }
 
@@ -52,5 +55,13 @@ public class CustomerJpaEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

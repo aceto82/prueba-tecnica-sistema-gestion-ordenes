@@ -14,6 +14,8 @@ public interface OrderRepository {
 
     Page<Order> findAll(OrderFilter filter, Pageable pageable);
 
+    Page<Order> findAll(OrderFilter filter, Pageable pageable, String username);
+
     Order save(Order order);
 
     boolean existsById(Long id);

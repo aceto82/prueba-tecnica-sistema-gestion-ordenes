@@ -16,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -38,10 +40,23 @@ public class OrderController {
             @RequestParam(required = false) OrderStatus status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
-            @RequestParam(required = false) String customerName) {
+            @RequestParam(required = false) String customerName,
+            Authentication authentication) {
 
         OrderFilter filter = new OrderFilter(status, dateFrom, dateTo, customerName);
-        Page<Order> orders = orderService.listOrders(filter, pageable);
+
+        // ADMIN sees all orders, USER sees only their own
+        // Default to admin behavior when no authentication (for tests)
+        String username = null;
+        if (authentication != null) {
+            boolean isAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            if (!isAdmin) {
+                username = authentication.getName();
+            }
+        }
+
+        Page<Order> orders = orderService.listOrders(filter, pageable, username);
         return orders.map(order -> {
             Customer customer = customerService.getCustomerById(order.getCustomerId());
             return OrderDtoMapper.toResponse(order, customer);

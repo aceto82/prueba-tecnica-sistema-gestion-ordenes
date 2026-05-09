@@ -28,6 +28,10 @@ public class OrderService {
         return orderRepository.findAll(filter, pageable);
     }
 
+    public Page<Order> listOrders(OrderFilter filter, Pageable pageable, String username) {
+        return orderRepository.findAll(filter, pageable, username);
+    }
+
     public Order getOrderById(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + id));

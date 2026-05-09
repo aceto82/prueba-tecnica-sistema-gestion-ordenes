@@ -23,8 +23,13 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
         long now = System.currentTimeMillis();
+        String role = userDetails.getAuthorities().stream()
+                .findFirst()
+                .map(a -> a.getAuthority().replace("ROLE_", ""))
+                .orElse("USER");
         return Jwts.builder()
                 .subject(userDetails.getUsername())
+                .claim("role", role)
                 .issuedAt(new Date(now))
                 .expiration(new Date(now + jwtProperties.getExpirationMs()))
                 .signWith(secretKey())

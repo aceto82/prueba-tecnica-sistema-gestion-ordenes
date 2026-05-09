@@ -24,6 +24,7 @@ export class AuthStore {
   readonly token = this._token.asReadonly();
   readonly currentUser = this._currentUser.asReadonly();
   readonly isAuthenticated = computed(() => this._token() !== null && this._currentUser() !== null);
+  readonly isAdmin = computed(() => this._currentUser()?.role === 'ADMIN');
 
   login(credentials: { username: string; password: string }): Observable<void> {
     return this.authService

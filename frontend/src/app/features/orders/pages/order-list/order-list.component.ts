@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { OrderStore, OrderListParams } from '../../order.store';
 import { OrderStatus, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '../../../../core/models/order.model';
+import { AuthStore } from '../../../auth/auth.store';
 
 @Component({
   selector: 'app-order-list',
@@ -195,6 +196,9 @@ import { OrderStatus, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '../../../
             <td>{{ order.createdAt | date:'short' }}</td>
             <td>
               <a [routerLink]="['/orders', order.id]" class="btn btn-outline">View</a>
+              @if (authStore.isAdmin()) {
+                <button class="btn btn-outline" style="margin-left: 0.5rem; color: #d32f2f;" (click)="deleteOrder(order.id)">Delete</button>
+              }
             </td>
           </tr>
           <tr *ngIf="store.isEmpty()">
@@ -213,6 +217,7 @@ import { OrderStatus, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '../../../
 })
 export class OrderListComponent implements OnInit {
   readonly store = inject(OrderStore);
+  readonly authStore = inject(AuthStore);
 
   readonly statuses: OrderStatus[] = ['PENDING', 'PROCESSING', 'COMPLETED', 'CANCELLED'];
   readonly ORDER_STATUS_LABELS = ORDER_STATUS_LABELS;
@@ -256,5 +261,11 @@ export class OrderListComponent implements OnInit {
 
   nextPage(): void {
     this.store.load({ page: this.store.currentPage() + 1 }).subscribe();
+  }
+
+  deleteOrder(id: number): void {
+    // TODO: Implement delete functionality via store
+    console.log('Delete order:', id);
+    // Placeholder for delete - actual implementation would call store.delete(id)
   }
 }
