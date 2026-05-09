@@ -27,6 +27,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -105,5 +106,16 @@ class OrderControllerSecurityTest {
                         .content("{}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400));
+    }
+
+    // --- Scenario: USER cannot delete orders (ADMIN-only endpoint per SecurityConfig) ---
+    // SecurityConfig: .requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasRole("ADMIN")
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void deleteOrder_withUserRole_returns403() throws Exception {
+        mockMvc.perform(delete("/api/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
     }
 }
