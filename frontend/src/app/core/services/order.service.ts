@@ -41,4 +41,8 @@ export class OrderService {
   update(id: number, req: UpdateOrderRequest): Observable<Order> {
     return this.http.put<Order>(`${API_BASE_URL}/api/orders/${id}`, req);
   }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${API_BASE_URL}/api/orders/${id}`);
+  }
 }

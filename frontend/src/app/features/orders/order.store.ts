@@ -114,4 +114,20 @@ export class OrderStore {
       })
     );
   }
+
+  delete(id: number): Observable<void> {
+    this._error.set(null);
+    return this.orderService.delete(id).pipe(
+      tap({
+        next: () => {
+          this._orders.update((list) => list.filter((o) => o.id !== id));
+          this._totalElements.update((n) => n - 1);
+          if (this._selected()?.id === id) this._selected.set(null);
+        },
+        error: (err) => {
+          this._error.set(err?.message ?? 'Failed to delete order');
+        },
+      })
+    );
+  }
 }

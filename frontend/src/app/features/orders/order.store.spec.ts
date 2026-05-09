@@ -110,6 +110,45 @@ describe('OrderStore', () => {
     });
   });
 
+  it('delete should remove the order from the signal', (done) => {
+    // Seed orders via load first
+    store.load().subscribe();
+    const loadReq = httpMock.expectOne(
+      (r) => r.url === 'http://localhost:8080/api/orders'
+    );
+    loadReq.flush({
+      content: [
+        {
+          id: 1,
+          status: 'PENDING',
+          total: 100.0,
+          createdAt: '2026-05-01T10:00:00',
+          customer: { id: 1, name: 'Test' },
+        },
+      ],
+      totalElements: 1,
+      totalPages: 1,
+      number: 0,
+      size: 20,
+      first: true,
+      last: true,
+    });
+
+    // Now call delete
+    store.delete(1).subscribe({
+      next: () => {
+        expect(store.orders().length).toBe(0);
+        expect(store.totalElements()).toBe(0);
+        done();
+      },
+      error: done.fail,
+    });
+
+    const deleteReq = httpMock.expectOne('http://localhost:8080/api/orders/1');
+    expect(deleteReq.request.method).toBe('DELETE');
+    deleteReq.flush(null, { status: 204, statusText: 'No Content' });
+  });
+
   it('update should replace the matching order in the signal', (done) => {
     // Seed orders via load first
     store.load().subscribe();
