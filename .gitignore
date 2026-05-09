@@ -1,0 +1,34 @@
+# ─── Backend (Java / Maven / Spring Boot) ───────────────────────────────────
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+!backend/.mvn/wrapper/maven-wrapper.properties
+backend/*.log
+backend/logs/
+
+# ─── Frontend (Node / Angular) ───────────────────────────────────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+frontend/*.log
+
+# ─── Environment / secrets ───────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+application-prod.yml
+application-staging.yml
+
+# ─── IDEs ────────────────────────────────────────────────────────────────────
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# ─── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── Docker ──────────────────────────────────────────────────────────────────
+docker-compose.override.yml
