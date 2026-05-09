@@ -108,7 +108,7 @@ import { Customer } from '../../../../core/models/customer.model';
             formControlName="customerId"
           >
             <option value="">Select a customer...</option>
-            <option *ngFor="let c of customers()" [value]="c.id">{{ c.name }}</option>
+            <option *ngFor="let c of customers(); trackBy: trackById" [value]="c.id">{{ c.name }}</option>
           </select>
           <p *ngIf="orderForm.get('customerId')?.invalid && orderForm.get('customerId')?.touched" class="field-error">
             Customer is required
@@ -213,5 +213,9 @@ export class OrderFormComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/orders']);
+  }
+
+  trackById(_index: number, item: { id: number }): number {
+    return item.id;
   }
 }

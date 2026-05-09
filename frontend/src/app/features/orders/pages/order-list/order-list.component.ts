@@ -161,7 +161,7 @@ import { AuthStore } from '../../../auth/auth.store';
         (ngModelChange)="onStatusChange($event)"
       >
         <option value="">All statuses</option>
-        <option *ngFor="let s of statuses" [value]="s">{{ ORDER_STATUS_LABELS[s] }}</option>
+        <option *ngFor="let s of statuses; trackBy: trackByStatus" [value]="s">{{ ORDER_STATUS_LABELS[s] }}</option>
       </select>
     </div>
 
@@ -184,7 +184,7 @@ import { AuthStore } from '../../../auth/auth.store';
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let order of store.orders()">
+          <tr *ngFor="let order of store.orders(); trackBy: trackById">
             <td>{{ order.id }}</td>
             <td>{{ order.customer.name }}</td>
             <td>
@@ -265,5 +265,13 @@ export class OrderListComponent implements OnInit {
 
   deleteOrder(_id: number): void {
     // TODO: implement delete via store.delete(id)
+  }
+
+  trackById(_index: number, item: { id: number }): number {
+    return item.id;
+  }
+
+  trackByStatus(_index: number, status: string): string {
+    return status;
   }
 }
