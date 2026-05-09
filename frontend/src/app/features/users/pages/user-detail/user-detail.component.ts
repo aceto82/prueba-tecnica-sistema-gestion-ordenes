@@ -100,36 +100,40 @@ import { UserStore } from '../../user.store';
   template: `
     @if (store.loading()) {
       <div class="loading-overlay">Loading user details...</div>
-    } @else if (store.error(); as err) {
-      <div class="error-state">{{ err }}</div>
-    } @else if (store.selected(); as user) {
-      <div class="detail-card">
-        <h2>User #{{ user.id }}</h2>
+    } @else {
+      @if (store.error(); as err) {
+        <div class="error-state">{{ err }}</div>
+      }
 
-        <div class="detail-row">
-          <span class="detail-label">Username</span>
-          <span class="detail-value">{{ user.username }}</span>
-        </div>
+      @if (store.selected(); as user) {
+        <div class="detail-card">
+          <h2>User #{{ user.id }}</h2>
 
-        <div class="detail-row">
-          <span class="detail-label">Role</span>
-          <span class="detail-value">
-            <span class="role-badge" [class.admin]="user.role === 'ADMIN'" [class.user]="user.role === 'USER'">
-              {{ user.role }}
+          <div class="detail-row">
+            <span class="detail-label">Username</span>
+            <span class="detail-value">{{ user.username }}</span>
+          </div>
+
+          <div class="detail-row">
+            <span class="detail-label">Role</span>
+            <span class="detail-value">
+              <span class="role-badge" [class.admin]="user.role === 'ADMIN'" [class.user]="user.role === 'USER'">
+                {{ user.role }}
+              </span>
             </span>
-          </span>
-        </div>
+          </div>
 
-        <div class="detail-row">
-          <span class="detail-label">Created</span>
-          <span class="detail-value">{{ user.createdAt | date:'medium' }}</span>
-        </div>
+          <div class="detail-row">
+            <span class="detail-label">Created</span>
+            <span class="detail-value">{{ user.createdAt | date:'medium' }}</span>
+          </div>
 
-        <div class="actions">
-          <a [routerLink]="['/users', user.id, 'edit']" class="btn btn-primary">Edit</a>
-          <a routerLink="/users" class="btn btn-outline">Back to List</a>
+          <div class="actions">
+            <a [routerLink]="['/users', user.id, 'edit']" class="btn btn-primary">Edit</a>
+            <a routerLink="/users" class="btn btn-outline">Back to List</a>
+          </div>
         </div>
-      </div>
+      }
     }
   `,
 })

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { AuthStore } from '../../../features/auth/auth.store';
+import { AuthStore } from '../../../../features/auth/auth.store';
 
 @Component({
   selector: 'app-sidebar',
@@ -35,9 +35,10 @@ import { AuthStore } from '../../../features/auth/auth.store';
   styles: [`
     .sidebar {
       width: 220px;
-      background: #1e293b;
+      background: var(--color-surface);
       height: 100%;
       padding: 1rem 0;
+      border-right: 1px solid var(--color-border-light);
 
       ul {
         list-style: none;
@@ -48,13 +49,13 @@ import { AuthStore } from '../../../features/auth/auth.store';
       a {
         display: block;
         padding: 0.75rem 1.5rem;
-        color: #cbd5e1;
+        color: var(--color-text-secondary);
         text-decoration: none;
-        transition: background 0.2s;
+        transition: background 0.2s, color 0.2s;
 
         &:hover,
         &.active {
-          background: #334155;
+          background: var(--color-primary);
           color: #fff;
         }
       }
@@ -62,7 +63,7 @@ import { AuthStore } from '../../../features/auth/auth.store';
       .admin-section {
         margin-top: 2rem;
         padding-top: 1rem;
-        border-top: 1px solid #334155;
+        border-top: 1px solid var(--color-border-light);
       }
 
       .admin-section h3 {
@@ -70,7 +71,7 @@ import { AuthStore } from '../../../features/auth/auth.store';
         margin: 0;
         font-size: 12px;
         text-transform: uppercase;
-        color: #64748b;
+        color: var(--color-text-muted);
       }
     }
   `],

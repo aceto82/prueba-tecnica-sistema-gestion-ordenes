@@ -1,18 +1,25 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthStore } from '../../../../features/auth/auth.store';
+import { ThemeStore } from '../../../../core/theme.store';
+import { ButtonComponent } from '../../../../shared/components';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [],
+  imports: [ButtonComponent],
   template: `
     <header class="header">
       <div class="user-info">
         <span class="username">{{ authStore.currentUser()?.username }}</span>
       </div>
-      <button class="logout-btn" (click)="onLogout()">Logout</button>
+      <div class="actions">
+        <app-button variant="ghost" size="sm" (clicked)="themeStore.toggle()">
+          {{ themeStore.isDark() ? '☀️' : '🌙' }}
+        </app-button>
+        <app-button variant="danger" size="sm" (clicked)="onLogout()">Logout</app-button>
+      </div>
     </header>
   `,
   styles: [`
@@ -20,36 +27,34 @@ import { AuthStore } from '../../../../features/auth/auth.store';
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      padding: 0 1.5rem;
+      padding: 0 var(--space-lg);
       height: 56px;
-      background: #fff;
-      border-bottom: 1px solid #e2e8f0;
-      gap: 1rem;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border-light);
+      gap: var(--space-md);
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+      }
 
       .username {
         font-weight: 500;
-        color: #475569;
+        color: var(--color-text-secondary);
       }
 
-      .logout-btn {
-        padding: 0.375rem 0.875rem;
-        background: #ef4444;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.875rem;
-        transition: background 0.2s;
-
-        &:hover {
-          background: #dc2626;
-        }
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
       }
     }
   `],
 })
 export class HeaderComponent {
   readonly authStore = inject(AuthStore);
+  readonly themeStore = inject(ThemeStore);
   private readonly router = inject(Router);
 
   onLogout(): void {

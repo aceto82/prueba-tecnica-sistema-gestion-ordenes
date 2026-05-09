@@ -1,0 +1,31 @@
+// === Dark Theme Overrides ===
+
+[data-theme="dark"] {
+  --color-primary: #90caf9;
+  --color-primary-hover: #64b5f6;
+  --color-primary-light: #1a237e;
+  --color-danger: #ef5350;
+  --color-danger-hover: #e53935;
+  --color-danger-light: #311;
+  --color-success: #66bb6a;
+  --color-success-light: #1b2e1b;
+  --color-warning: #ffa726;
+  --color-warning-light: #2e1b0b;
+  --color-info: #42a5f5;
+  --color-info-light: #0d1b3e;
+
+  --color-bg: #121212;
+  --color-surface: #1e1e1e;
+  --color-surface-hover: #2a2a2a;
+  --color-text: #e0e0e0;
+  --color-text-secondary: #aaa;
+  --color-text-muted: #777;
+  --color-border: #444;
+  --color-border-light: #333;
+  --color-border-hover: #90caf9;
+  --color-overlay: rgba(0, 0, 0, 0.6);
+
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.5);
+}

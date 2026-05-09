@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, AfterViewInit, ElementRef, ViewChild, effect } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { DashboardStore } from './dashboard.store';
+import { CardComponent } from '../../shared/components';
 import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, CardComponent],
   template: `
     <div class="dashboard">
       <h1>Dashboard</h1>
@@ -23,90 +24,71 @@ import Chart from 'chart.js/auto';
       @if (store.stats(); as stats) {
         <!-- KPI Cards -->
         <div class="kpi-cards">
-          <div class="kpi-card">
+          <app-card class="kpi-card" padding="lg">
             <h3>Total Orders</h3>
             <p class="kpi-value">{{ store.totalOrders() }}</p>
-          </div>
-          <div class="kpi-card">
+          </app-card>
+          <app-card class="kpi-card" padding="lg">
             <h3>Pending</h3>
             <p class="kpi-value pending">{{ store.pendingCount() }}</p>
-          </div>
-          <div class="kpi-card">
+          </app-card>
+          <app-card class="kpi-card" padding="lg">
             <h3>Processing</h3>
             <p class="kpi-value processing">{{ store.processingCount() }}</p>
-          </div>
-          <div class="kpi-card">
+          </app-card>
+          <app-card class="kpi-card" padding="lg">
             <h3>Completed</h3>
             <p class="kpi-value completed">{{ store.completedCount() }}</p>
-          </div>
+          </app-card>
         </div>
 
         <!-- Chart -->
-        <div class="chart-container">
+        <app-card class="chart-container" padding="lg">
           <h2>Orders by Status</h2>
           <canvas #chartCanvas></canvas>
-        </div>
+        </app-card>
 
         <!-- Revenue -->
-        <div class="revenue-card">
+        <app-card padding="lg" style="text-align: center;">
           <h3>Total Revenue</h3>
           <p class="kpi-value">\${{ store.totalRevenue() | number:'1.2-2' }}</p>
-        </div>
+        </app-card>
       }
     </div>
   `,
   styles: [`
     .dashboard {
-      padding: 20px;
+      padding: var(--space-lg);
     }
     h1 {
-      margin-bottom: 20px;
+      margin-bottom: var(--space-lg);
+      color: var(--color-text);
     }
     .kpi-cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
     }
     .kpi-card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       text-align: center;
     }
     .kpi-card h3 {
-      margin: 0 0 10px 0;
+      margin: 0 0 var(--space-sm) 0;
       font-size: 14px;
-      color: #666;
+      color: var(--color-text-secondary);
     }
     .kpi-value {
       font-size: 32px;
       font-weight: bold;
       margin: 0;
+      color: var(--color-text);
     }
-    .kpi-value.pending { color: #ff9800; }
-    .kpi-value.processing { color: #2196f3; }
-    .kpi-value.completed { color: #4caf50; }
-    .chart-container {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-    .chart-container h2 {
-      margin-top: 0;
-    }
-    .revenue-card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      text-align: center;
-    }
+    .kpi-value.pending { color: var(--color-warning); }
+    .kpi-value.processing { color: var(--color-info); }
+    .kpi-value.completed { color: var(--color-success); }
     .error {
-      color: #f44336;
+      color: var(--color-danger);
     }
   `]
 })

@@ -2,153 +2,80 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserStore } from '../../user.store';
+import { CardComponent, InputComponent, SelectComponent, ButtonComponent } from '../../../../shared/components';
+import type { SelectOption } from '../../../../shared/components';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule],
-  styles: [
-    `
-      .form-card {
-        max-width: 480px;
-        background: #fff;
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-      }
-      h2 {
-        margin: 0 0 1.25rem;
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: #212121;
-      }
-      .form-group {
-        margin-bottom: 1rem;
-      }
-      .form-group label {
-        display: block;
-        margin-bottom: 0.375rem;
-        font-size: 0.875rem;
-        color: #555;
-      }
-      .form-control {
-        display: block;
-        width: 100%;
-        padding: 0.5rem 0.75rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 0.875rem;
-        box-sizing: border-box;
-        transition: border-color 0.15s;
-      }
-      .form-control:focus {
-        outline: none;
-        border-color: #1976d2;
-      }
-      .field-error {
-        color: #d32f2f;
-        font-size: 0.75rem;
-        margin-top: 0.25rem;
-      }
-      .form-error {
-        color: #d32f2f;
-        font-size: 0.8125rem;
-        margin-bottom: 1rem;
-      }
-      .actions {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 1.5rem;
-      }
-      .btn {
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 4px;
-        font-size: 0.875rem;
-        cursor: pointer;
-        transition: opacity 0.15s;
-      }
-      .btn-primary {
-        background: #1976d2;
-        color: #fff;
-      }
-      .btn-primary:disabled {
-        opacity: 0.55;
-        cursor: not-allowed;
-      }
-      .btn-primary:not(:disabled):hover {
-        background: #1565c0;
-      }
-      .btn-cancel {
-        background: transparent;
-        border: 1px solid #ccc;
-        color: #555;
-      }
-      .btn-cancel:hover {
-        background: #f5f5f5;
-      }
-    `,
-  ],
+  imports: [ReactiveFormsModule, CardComponent, InputComponent, SelectComponent, ButtonComponent],
+  styles: [`
+    .form-card {
+      max-width: 480px;
+    }
+    h2 {
+      margin: 0 0 var(--space-lg);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .form-error {
+      color: var(--color-danger);
+      font-size: 0.8125rem;
+      margin-bottom: var(--space-md);
+    }
+    .actions {
+      display: flex;
+      gap: var(--space-sm);
+      margin-top: var(--space-lg);
+    }
+  `],
   template: `
     <div class="form-card">
-      <h2>{{ isEditMode() ? 'Edit User' : 'New User' }}</h2>
+      <app-card padding="lg">
+        <h2>{{ isEditMode() ? 'Edit User' : 'New User' }}</h2>
 
-      @if (store.error(); as err) {
-        <p class="form-error">{{ err }}</p>
-      }
+        @if (store.error(); as err) {
+          <p class="form-error">{{ err }}</p>
+        }
 
-      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input
-            id="username"
-            type="text"
-            class="form-control"
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+          <app-input
             formControlName="username"
+            label="Username"
+            type="text"
+            id="username"
           />
-          @if (userForm.get('username')?.invalid && userForm.get('username')?.touched) {
-            <p class="field-error">Username is required</p>
-          }
-        </div>
 
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            class="form-control"
+          <app-input
             formControlName="password"
+            label="Password"
+            type="password"
+            id="password"
           />
-          @if (userForm.get('password')?.invalid && userForm.get('password')?.touched) {
-            <p class="field-error">{{ isEditMode() ? 'Password must be at least 6 characters' : 'Password is required' }}</p>
-          }
-        </div>
 
-        <div class="form-group">
-          <label for="role">Role</label>
-          <select id="role" class="form-control" formControlName="role">
-            <option value="">Select a role</option>
-            <option value="ADMIN">Admin</option>
-            <option value="USER">User</option>
-          </select>
-          @if (userForm.get('role')?.invalid && userForm.get('role')?.touched) {
-            <p class="field-error">Role is required</p>
-          }
-        </div>
+          <app-select
+            formControlName="role"
+            label="Role"
+            [options]="roleOptions"
+            placeholder="Select a role"
+            id="role"
+          />
 
-        <div class="actions">
-          <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || saving()">
-            {{ saving() ? 'Saving...' : 'Save' }}
-          </button>
-          <button type="button" class="btn btn-cancel" (click)="goBack()">Cancel</button>
-        </div>
-      </form>
+          <div class="actions">
+            <app-button type="submit" variant="primary" [disabled]="userForm.invalid || saving()" [loading]="saving()">
+              {{ saving() ? 'Saving...' : 'Save' }}
+            </app-button>
+            <app-button type="button" variant="outline" (clicked)="goBack()">Cancel</app-button>
+          </div>
+        </form>
+      </app-card>
     </div>
   `,
 })
 export class UserFormComponent implements OnInit {
-  private readonly store = inject(UserStore);
+  readonly store = inject(UserStore);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
@@ -157,6 +84,11 @@ export class UserFormComponent implements OnInit {
   private editId: number | null = null;
 
   readonly isEditMode = signal(false);
+
+  readonly roleOptions: SelectOption[] = [
+    { value: 'ADMIN', label: 'Admin' },
+    { value: 'USER', label: 'User' },
+  ];
 
   readonly userForm = this.fb.group({
     username: ['', [Validators.required, Validators.maxLength(50)]],
