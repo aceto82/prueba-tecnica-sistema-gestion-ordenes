@@ -185,7 +185,7 @@ if [ -f "$wrapperProperties" ]; then
   distributionUrl=$(grep "^distributionUrl" "$wrapperProperties" | sed 's/.*distributionUrl=//')
 fi
 
-MAVEN_HOME="${MAVEN_USER_HOME:-${user.home}/.m2}"
+MAVEN_HOME="${MAVEN_USER_HOME:-${HOME}/.m2}"
 if [ ! -d "$MAVEN_HOME" ]; then
   MAVEN_HOME="$HOME/.m2"
 fi
