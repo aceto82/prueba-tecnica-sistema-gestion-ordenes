@@ -5,9 +5,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
@@ -15,6 +20,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
+@NamedEntityGraph(name = "order.customer", attributeNodes = @NamedAttributeNode("customer"))
 public class OrderJpaEntity {
 
     @Id
@@ -31,18 +37,11 @@ public class OrderJpaEntity {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    private Long customerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private CustomerJpaEntity customer;
 
     public OrderJpaEntity() {
-    }
-
-    public OrderJpaEntity(Long id, OrderStatus status, BigDecimal total, LocalDateTime createdAt, Long customerId) {
-        this.id = id;
-        this.status = status;
-        this.total = total;
-        this.createdAt = createdAt;
-        this.customerId = customerId;
     }
 
     public Long getId() {
@@ -77,11 +76,11 @@ public class OrderJpaEntity {
         this.createdAt = createdAt;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public CustomerJpaEntity getCustomer() {
+        return customer;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setCustomer(CustomerJpaEntity customer) {
+        this.customer = customer;
     }
 }

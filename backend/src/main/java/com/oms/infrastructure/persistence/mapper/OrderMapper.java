@@ -1,6 +1,7 @@
 package com.oms.infrastructure.persistence.mapper;
 
 import com.oms.domain.model.Order;
+import com.oms.infrastructure.persistence.entity.CustomerJpaEntity;
 import com.oms.infrastructure.persistence.entity.OrderJpaEntity;
 
 public final class OrderMapper {
@@ -16,18 +17,21 @@ public final class OrderMapper {
                 entity.getStatus(),
                 entity.getTotal(),
                 entity.getCreatedAt(),
-                entity.getCustomerId()
+                entity.getCustomer().getId()
         );
     }
 
     public static OrderJpaEntity toJpa(Order order) {
         if (order == null) return null;
-        return new OrderJpaEntity(
-                order.getId(),
-                order.getStatus(),
-                order.getTotal(),
-                order.getCreatedAt(),
-                order.getCustomerId()
-        );
+        OrderJpaEntity entity = new OrderJpaEntity();
+        entity.setId(order.getId());
+        entity.setStatus(order.getStatus());
+        entity.setTotal(order.getTotal());
+        entity.setCreatedAt(order.getCreatedAt());
+        // Set customer reference by id only — avoids an extra SELECT on save
+        CustomerJpaEntity customerRef = new CustomerJpaEntity();
+        customerRef.setId(order.getCustomerId());
+        entity.setCustomer(customerRef);
+        return entity;
     }
 }
