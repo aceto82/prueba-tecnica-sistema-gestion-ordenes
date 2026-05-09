@@ -40,6 +40,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("POST", "/api/auth/login").permitAll()
                         .requestMatchers("/error").permitAll()
+                        // All /api/** endpoints (including /api/orders/** and /api/customers/**)
+                        // require a valid JWT. Authentication is enforced via JwtAuthenticationFilter.
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
