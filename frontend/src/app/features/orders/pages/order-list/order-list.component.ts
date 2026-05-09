@@ -272,7 +272,12 @@ export class OrderListComponent implements OnInit {
     this.store.load({ page: this.store.currentPage() + 1 }).subscribe();
   }
 
-  deleteOrder(_id: number): void {
-    // TODO: implement delete via store.delete(id)
+  deleteOrder(id: number): void {
+    if (!confirm('Are you sure you want to delete this order?')) return;
+    this.store.delete(id).subscribe({
+      error: () => {
+        this.store.load().subscribe();
+      },
+    });
   }
 }

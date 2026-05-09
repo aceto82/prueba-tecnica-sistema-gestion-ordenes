@@ -110,6 +110,19 @@ describe('OrderService', () => {
     });
   });
 
+  it('should delete an order', () => {
+    service.delete(1).subscribe({
+      next: () => {
+        // No content expected (void)
+        expect(true).toBe(true);
+      },
+    });
+
+    const req = httpMock.expectOne('http://localhost:8080/api/orders/1');
+    expect(req.request.method).toBe('DELETE');
+    req.flush(null, { status: 204, statusText: 'No Content' });
+  });
+
   it('should update an order', () => {
     service.update(1, { status: 'PROCESSING' }).subscribe((order) => {
       expect(order.status).toBe('PROCESSING');
