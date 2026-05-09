@@ -68,7 +68,7 @@ class OrderControllerTest {
     void listOrders_noFilter_returns200WithPage() throws Exception {
         Order order = sampleOrder();
         Customer customer = sampleCustomer();
-        when(orderService.listOrders(any(), any()))
+        when(orderService.listOrders(any(), any(), any()))
                 .thenReturn(new PageImpl<>(List.of(order), PageRequest.of(0, 10), 1));
         when(customerService.getCustomerById(1L)).thenReturn(customer);
 
@@ -86,7 +86,7 @@ class OrderControllerTest {
     void listOrders_withStatusFilter_returns200() throws Exception {
         Order order = sampleOrder();
         Customer customer = sampleCustomer();
-        when(orderService.listOrders(any(), any()))
+        when(orderService.listOrders(any(), any(), any()))
                 .thenReturn(new PageImpl<>(List.of(order), PageRequest.of(0, 10), 1));
         when(customerService.getCustomerById(1L)).thenReturn(customer);
 

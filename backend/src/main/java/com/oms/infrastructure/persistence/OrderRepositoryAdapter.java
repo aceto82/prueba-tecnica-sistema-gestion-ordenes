@@ -40,6 +40,16 @@ public class OrderRepositoryAdapter implements OrderRepository {
     }
 
     @Override
+    public Page<Order> findAll(OrderFilter filter, Pageable pageable, String username) {
+        var spec = OrderSpecification.fromFilter(filter);
+        if (username != null && !username.isBlank()) {
+            spec = spec.and(OrderSpecification.byUserId(username));
+        }
+        return jpaRepository.findAll(spec, pageable)
+                .map(OrderMapper::toDomain);
+    }
+
+    @Override
     public Order save(Order order) {
         return OrderMapper.toDomain(jpaRepository.save(OrderMapper.toJpa(order)));
     }

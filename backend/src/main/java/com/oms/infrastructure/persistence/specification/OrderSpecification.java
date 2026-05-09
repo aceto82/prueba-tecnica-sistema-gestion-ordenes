@@ -32,6 +32,11 @@ public final class OrderSpecification {
                 cb.like(cb.lower(root.get("customer").get("name")), "%" + name.toLowerCase() + "%");
     }
 
+    public static Specification<OrderJpaEntity> byUserId(String userId) {
+        return (root, query, cb) ->
+                cb.equal(root.get("customer").get("userId"), userId);
+    }
+
     public static Specification<OrderJpaEntity> fromFilter(OrderFilter filter) {
         Specification<OrderJpaEntity> spec = Specification.where(null);
 
