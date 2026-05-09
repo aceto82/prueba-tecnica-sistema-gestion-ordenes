@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, AfterViewInit, ElementRef, ViewChild, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { DashboardStore } from './dashboard.store';
 import Chart from 'chart.js/auto';
 
@@ -7,7 +7,7 @@ import Chart from 'chart.js/auto';
   selector: 'app-dashboard',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
+  imports: [DecimalPipe],
   template: `
     <div class="dashboard">
       <h1>Dashboard</h1>

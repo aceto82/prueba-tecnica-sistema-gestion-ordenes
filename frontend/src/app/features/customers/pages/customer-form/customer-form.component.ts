@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgIf } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomerStore } from '../../customer.store';
 
@@ -8,7 +7,7 @@ import { CustomerStore } from '../../customer.store';
   selector: 'app-customer-form',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, NgIf],
+  imports: [ReactiveFormsModule],
   styles: [
     `
       .form-card {
@@ -95,7 +94,9 @@ import { CustomerStore } from '../../customer.store';
     <div class="form-card">
       <h2>{{ isEditMode() ? 'Edit Customer' : 'New Customer' }}</h2>
 
-      <p *ngIf="store.error() as err" class="form-error">{{ err }}</p>
+      @if (store.error(); as err) {
+        <p class="form-error">{{ err }}</p>
+      }
 
       <form [formGroup]="customerForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
@@ -106,9 +107,9 @@ import { CustomerStore } from '../../customer.store';
             class="form-control"
             formControlName="name"
           />
-          <p *ngIf="customerForm.get('name')?.invalid && customerForm.get('name')?.touched" class="field-error">
-            Name is required
-          </p>
+          @if (customerForm.get('name')?.invalid && customerForm.get('name')?.touched) {
+            <p class="field-error">Name is required</p>
+          }
         </div>
 
         <div class="form-group">
@@ -119,9 +120,9 @@ import { CustomerStore } from '../../customer.store';
             class="form-control"
             formControlName="email"
           />
-          <p *ngIf="customerForm.get('email')?.invalid && customerForm.get('email')?.touched" class="field-error">
-            A valid email is required
-          </p>
+          @if (customerForm.get('email')?.invalid && customerForm.get('email')?.touched) {
+            <p class="field-error">A valid email is required</p>
+          }
         </div>
 
         <div class="actions">

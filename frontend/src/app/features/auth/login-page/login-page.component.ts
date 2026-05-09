@@ -10,14 +10,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgIf } from '@angular/common';
 import { AuthStore } from '../auth.store';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, NgIf],
+  imports: [ReactiveFormsModule],
   styles: [
     `
       .login-container {
@@ -139,7 +138,9 @@ import { AuthStore } from '../auth.store';
             {{ loading() ? 'Logging in...' : 'Log in' }}
           </button>
 
-          <p *ngIf="error()" class="login-error">{{ error() }}</p>
+          @if (error()) {
+            <p class="login-error">{{ error() }}</p>
+          }
         </form>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { CurrencyPipe, DatePipe, NgFor, NgIf, NgStyle } from '@angular/common';
+import { CurrencyPipe, DatePipe, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
@@ -11,7 +11,7 @@ import { AuthStore } from '../../../auth/auth.store';
   selector: 'app-order-list',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgFor, NgIf, NgStyle, FormsModule, RouterLink, CurrencyPipe, DatePipe],
+  imports: [NgStyle, FormsModule, RouterLink, CurrencyPipe, DatePipe],
   styles: [
     `
       .page-header {
@@ -161,58 +161,67 @@ import { AuthStore } from '../../../auth/auth.store';
         (ngModelChange)="onStatusChange($event)"
       >
         <option value="">All statuses</option>
-        <option *ngFor="let s of statuses; trackBy: trackByStatus" [value]="s">{{ ORDER_STATUS_LABELS[s] }}</option>
+        @for (s of statuses; track s) {
+          <option [value]="s">{{ ORDER_STATUS_LABELS[s] }}</option>
+        }
       </select>
     </div>
 
-    <ng-container *ngIf="store.loading(); else loaded">
+    @if (store.loading()) {
       <div class="loading-overlay">Loading orders...</div>
-    </ng-container>
+    } @else {
+      @if (store.error(); as err) {
+        <div class="error-state">{{ err }}</div>
+      }
 
-    <ng-template #loaded>
-      <div *ngIf="store.error() as err" class="error-state">{{ err }}</div>
+      @if (!store.error()) {
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Customer</th>
+              <th>Status</th>
+              <th>Total</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of store.orders(); track order.id) {
+              <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.customer.name }}</td>
+                <td>
+                  <span class="status-badge" [ngStyle]="{'background': ORDER_STATUS_COLORS[order.status]}">
+                    {{ ORDER_STATUS_LABELS[order.status] }}
+                  </span>
+                </td>
+                <td>{{ order.total | currency }}</td>
+                <td>{{ order.createdAt | date:'short' }}</td>
+                <td>
+                  <a [routerLink]="['/orders', order.id]" class="btn btn-outline">View</a>
+                  @if (authStore.isAdmin()) {
+                    <button class="btn btn-outline" style="margin-left: 0.5rem; color: #d32f2f;" (click)="deleteOrder(order.id)">Delete</button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-state">No orders found.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
 
-      <table *ngIf="!store.error()">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Customer</th>
-            <th>Status</th>
-            <th>Total</th>
-            <th>Created</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let order of store.orders(); trackBy: trackById">
-            <td>{{ order.id }}</td>
-            <td>{{ order.customer.name }}</td>
-            <td>
-              <span class="status-badge" [ngStyle]="{'background': ORDER_STATUS_COLORS[order.status]}">
-                {{ ORDER_STATUS_LABELS[order.status] }}
-              </span>
-            </td>
-            <td>{{ order.total | currency }}</td>
-            <td>{{ order.createdAt | date:'short' }}</td>
-            <td>
-              <a [routerLink]="['/orders', order.id]" class="btn btn-outline">View</a>
-              @if (authStore.isAdmin()) {
-                <button class="btn btn-outline" style="margin-left: 0.5rem; color: #d32f2f;" (click)="deleteOrder(order.id)">Delete</button>
-              }
-            </td>
-          </tr>
-          <tr *ngIf="store.isEmpty()">
-            <td colspan="6" class="empty-state">No orders found.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="pagination" *ngIf="store.totalPages() > 1">
-        <button class="btn btn-outline" (click)="prevPage()" [disabled]="store.currentPage() === 0">Previous</button>
-        <span>Page {{ store.currentPage() + 1 }} of {{ store.totalPages() }}</span>
-        <button class="btn btn-outline" (click)="nextPage()" [disabled]="!store.hasNext()">Next</button>
-      </div>
-    </ng-template>
+      @if (store.totalPages() > 1) {
+        <div class="pagination">
+          <button class="btn btn-outline" (click)="prevPage()" [disabled]="store.currentPage() === 0">Previous</button>
+          <span>Page {{ store.currentPage() + 1 }} of {{ store.totalPages() }}</span>
+          <button class="btn btn-outline" (click)="nextPage()" [disabled]="!store.hasNext()">Next</button>
+        </div>
+      }
+    }
   `,
 })
 export class OrderListComponent implements OnInit {
@@ -265,13 +274,5 @@ export class OrderListComponent implements OnInit {
 
   deleteOrder(_id: number): void {
     // TODO: implement delete via store.delete(id)
-  }
-
-  trackById(_index: number, item: { id: number }): number {
-    return item.id;
-  }
-
-  trackByStatus(_index: number, status: string): string {
-    return status;
   }
 }

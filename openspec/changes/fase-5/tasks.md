@@ -51,13 +51,13 @@ Chain strategy: pending
 
 ## Phase 4: TD-4 — Angular Control-Flow Migration
 
-- [ ] 4.1 Migrate `customer-list.component.ts`: Replace *ngIf/*ngFor with @if/@for, remove NgFor/NgIf from imports, remove trackById method
-- [ ] 4.2 Migrate `customer-form.component.ts`: Replace *ngIf with @if/else, remove NgIf from imports
-- [ ] 4.3 Migrate `order-list.component.ts`: Replace *ngIf/*ngFor with @if/@for/@empty, remove NgFor/NgIf from imports, remove trackById + trackByStatus methods
-- [ ] 4.4 Migrate `order-form.component.ts`: Replace *ngIf/*ngFor with @if/@for, remove NgFor/NgIf from imports, remove trackById method
-- [ ] 4.5 Migrate `order-detail.component.ts`: Replace *ngIf with @if, remove NgIf from imports
-- [ ] 4.6 Migrate `login-page.component.ts`: Replace *ngIf with @if, remove NgIf from imports
-- [ ] 4.7 Migrate `dashboard.component.ts`: Replace CommonModule with DecimalPipe import, verify @if blocks remain correct
+- [x] 4.1 Migrate `customer-list.component.ts`: Replace *ngIf/*ngFor with @if/@for, remove NgFor/NgIf from imports, remove trackById method
+- [x] 4.2 Migrate `customer-form.component.ts`: Replace *ngIf with @if, remove NgIf from imports
+- [x] 4.3 Migrate `order-list.component.ts`: Replace *ngIf/*ngFor with @if/@for/@empty, remove NgFor/NgIf from imports, remove trackById + trackByStatus methods
+- [x] 4.4 Migrate `order-form.component.ts`: Replace *ngIf/*ngFor with @if/@for, remove NgFor/NgIf from imports, remove trackById method
+- [x] 4.5 Migrate `order-detail.component.ts`: Replace *ngIf with @if, remove NgIf from imports
+- [x] 4.6 Migrate `login-page.component.ts`: Replace *ngIf with @if, remove NgIf from imports
+- [x] 4.7 Migrate `dashboard.component.ts`: Replace CommonModule with DecimalPipe import, verify @if blocks remain correct
 
 ---
 
