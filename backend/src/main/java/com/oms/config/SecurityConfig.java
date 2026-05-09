@@ -44,6 +44,7 @@ public class SecurityConfig {
                         // Admin-only delete operations
                         .requestMatchers(HttpMethod.DELETE, "/api/orders/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/customers/**").hasRole("ADMIN")
+                        .requestMatchers("/api/users/**").hasRole("ADMIN")
                         // All authenticated users can read/write orders and customers
                         .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/customers/**").hasAnyRole("USER", "ADMIN")

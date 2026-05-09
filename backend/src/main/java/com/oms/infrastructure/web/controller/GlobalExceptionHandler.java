@@ -1,6 +1,7 @@
 package com.oms.infrastructure.web.controller;
 
 import com.oms.domain.exception.DuplicateEmailException;
+import com.oms.domain.exception.DuplicateUsernameException;
 import com.oms.domain.exception.InvalidStatusTransitionException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateEmailException.class)
     public ProblemDetail handleDuplicateEmail(DuplicateEmailException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateUsernameException.class)
+    public ProblemDetail handleDuplicateUsername(DuplicateUsernameException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
     }
 
