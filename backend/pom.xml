@@ -87,6 +87,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring Security Test (test scope) -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- ArchUnit (test scope) -->
         <dependency>
             <groupId>com.tngtech.archunit</groupId>
