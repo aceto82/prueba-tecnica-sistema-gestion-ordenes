@@ -1,5 +1,6 @@
 package com.oms.domain.model;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class User {
@@ -8,20 +9,26 @@ public class User {
     private String username;
     private String password;
     private Role role;
+    private Instant createdAt;
 
-    User(Long id, String username, String password, Role role) {
+    User(Long id, String username, String password, Role role, Instant createdAt) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.role = role;
+        this.createdAt = createdAt;
     }
 
     public static User create(String username, String password, Role role) {
-        return new User(null, username, password, role);
+        return new User(null, username, password, role, null);
     }
 
     public static User rehydrate(Long id, String username, String password, Role role) {
-        return new User(id, username, password, role);
+        return new User(id, username, password, role, null);
+    }
+
+    public static User rehydrate(Long id, String username, String password, Role role, Instant createdAt) {
+        return new User(id, username, password, role, createdAt);
     }
 
     public Long getId() {
@@ -56,6 +63,14 @@ public class User {
         this.role = role;
     }
 
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,6 +85,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{id=" + id + ", username='" + username + "', role=" + role + "}";
+        return "User{id=" + id + ", username='" + username + "', role=" + role + ", createdAt=" + createdAt + "}";
     }
 }

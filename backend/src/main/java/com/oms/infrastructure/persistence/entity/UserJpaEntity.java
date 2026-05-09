@@ -9,6 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "users")
@@ -27,6 +30,10 @@ public class UserJpaEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private Instant createdAt;
 
     public UserJpaEntity() {
     }
@@ -68,5 +75,9 @@ public class UserJpaEntity {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 }

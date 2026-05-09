@@ -15,7 +15,8 @@ public final class UserMapper {
                 entity.getId(),
                 entity.getUsername(),
                 entity.getPassword(),
-                entity.getRole()
+                entity.getRole(),
+                entity.getCreatedAt()
         );
     }
 
