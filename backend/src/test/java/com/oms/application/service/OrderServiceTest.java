@@ -147,4 +147,47 @@ class OrderServiceTest {
 
         assertThat(result.getContent()).hasSize(1);
     }
+
+    // --- Role-scoping spec scenarios (F4-T01) ---
+
+    @Test
+    void listOrders_userRole_scopesByUsername_returnsOnlyOwnOrders() {
+        // GIVEN three orders exist, two for "alice" and one for "bob"
+        // WHEN service is called with username="alice" (USER role scenario)
+        // THEN only alice's orders are returned
+        OrderFilter filter = new OrderFilter(null, null, null, null);
+        Pageable pageable = PageRequest.of(0, 10);
+        Order aliceOrder1 = Order.rehydrate(1L, OrderStatus.PENDING, new BigDecimal("50.00"), LocalDateTime.now(), 1L);
+        Order aliceOrder2 = Order.rehydrate(2L, OrderStatus.PROCESSING, new BigDecimal("75.00"), LocalDateTime.now(), 1L);
+        Page<Order> alicePage = new PageImpl<>(List.of(aliceOrder1, aliceOrder2), pageable, 2);
+
+        when(orderRepository.findAll(eq(filter), eq(pageable), eq("alice")))
+                .thenReturn(alicePage);
+
+        Page<Order> result = orderService.listOrders(filter, pageable, "alice");
+
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getTotalElements()).isEqualTo(2);
+    }
+
+    @Test
+    void listOrders_adminRole_returnsAllOrders_byPassingNullUsername() {
+        // GIVEN three orders from different users
+        // WHEN service is called with username=null (ADMIN role scenario)
+        // THEN all three orders are returned
+        OrderFilter filter = new OrderFilter(null, null, null, null);
+        Pageable pageable = PageRequest.of(0, 10);
+        Order o1 = Order.rehydrate(1L, OrderStatus.PENDING, new BigDecimal("50.00"), LocalDateTime.now(), 1L);
+        Order o2 = Order.rehydrate(2L, OrderStatus.PROCESSING, new BigDecimal("75.00"), LocalDateTime.now(), 2L);
+        Order o3 = Order.rehydrate(3L, OrderStatus.COMPLETED, new BigDecimal("200.00"), LocalDateTime.now(), 3L);
+        Page<Order> allOrders = new PageImpl<>(List.of(o1, o2, o3), pageable, 3);
+
+        when(orderRepository.findAll(eq(filter), eq(pageable), eq(null)))
+                .thenReturn(allOrders);
+
+        Page<Order> result = orderService.listOrders(filter, pageable, null);
+
+        assertThat(result.getContent()).hasSize(3);
+        assertThat(result.getTotalElements()).isEqualTo(3);
+    }
 }
