@@ -47,6 +47,7 @@ export class InputComponent implements ControlValueAccessor {
 
   value: string | number = '';
 
+  private readonly cdr = inject(ChangeDetectorRef);
   private onChange: (value: string | number) => void = () => {};
   private onTouched: () => void = () => {};
 
