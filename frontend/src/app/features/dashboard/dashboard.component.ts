@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, AfterViewInit, ElementRef, ViewChild, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, AfterViewInit, ElementRef, ViewChild, effect } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { DashboardStore } from './dashboard.store';
 import { CardComponent } from '../../shared/components';
@@ -92,7 +92,7 @@ import Chart from 'chart.js/auto';
     }
   `]
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly store = inject(DashboardStore);
 
   @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
@@ -116,7 +116,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     // Chart creation is handled reactively by the effect in the constructor
   }
 
+  ngOnDestroy(): void {
+    this.chart?.destroy();
+    this.chart = null;
+  }
+
   private createChart(ordersByStatus: Record<string, number>): void {
+    this.chart?.destroy();
+
     const labels = Object.keys(ordersByStatus);
     const data = Object.values(ordersByStatus);
     const colors = ['#ff9800', '#2196f3', '#4caf50', '#f44336'];
