@@ -46,6 +46,8 @@ export interface SelectOption {
   `,
 })
 export class SelectComponent implements ControlValueAccessor {
+  private readonly cdr = inject(ChangeDetectorRef);
+
   @Input() label = '';
   @Input() options: SelectOption[] = [];
   @Input() placeholder = '';

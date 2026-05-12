@@ -20,11 +20,11 @@ public class User {
     }
 
     public static User create(String username, String password, Role role) {
-        return new User(null, username, password, role, null);
+        return new User(null, username, password, role, Instant.now());
     }
 
     public static User rehydrate(Long id, String username, String password, Role role) {
-        return new User(id, username, password, role, null);
+        return new User(id, username, password, role, Instant.now());
     }
 
     public static User rehydrate(Long id, String username, String password, Role role, Instant createdAt) {
