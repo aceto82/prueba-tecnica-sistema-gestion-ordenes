@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, inject, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -45,11 +45,13 @@ export class InputComponent implements ControlValueAccessor {
 
   value: string | number = '';
 
+  private readonly cdr = inject(ChangeDetectorRef);
   private onChange: (value: string | number) => void = () => {};
   private onTouched: () => void = () => {};
 
   writeValue(value: string | number): void {
     this.value = value ?? '';
+    this.cdr.markForCheck();
   }
 
   registerOnChange(fn: (value: string | number) => void): void {
