@@ -36,7 +36,6 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@a
   `,
 })
 export class InputComponent implements ControlValueAccessor {
-  private readonly cdr = inject(ChangeDetectorRef);
 
   @Input() label = '';
   @Input() type: 'text' | 'email' | 'password' | 'number' = 'text';
