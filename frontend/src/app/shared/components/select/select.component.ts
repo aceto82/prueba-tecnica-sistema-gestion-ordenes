@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, forwardRef, inject } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
 export interface SelectOption {
@@ -46,6 +46,8 @@ export interface SelectOption {
   `,
 })
 export class SelectComponent implements ControlValueAccessor {
+  private readonly cdr = inject(ChangeDetectorRef);
+
   @Input() label = '';
   @Input() options: SelectOption[] = [];
   @Input() placeholder = '';
@@ -60,6 +62,7 @@ export class SelectComponent implements ControlValueAccessor {
 
   writeValue(value: string | number): void {
     this.value = value ?? '';
+    this.cdr.markForCheck();
   }
 
   registerOnChange(fn: (value: string | number) => void): void {
