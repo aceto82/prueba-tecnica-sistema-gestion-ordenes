@@ -30,5 +30,8 @@ application-staging.yml
 .DS_Store
 Thumbs.db
 
+# ─── AI Tooling ──────────────────────────────────────────────────────────────
+.atl/
+
 # ─── Docker ──────────────────────────────────────────────────────────────────
 docker-compose.override.yml
